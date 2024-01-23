@@ -63,5 +63,5 @@ Kui saunas pole üldse käidud, siis ka trahv, ehk igas saunas peab olema sisse-
 171-172
 181-182
 
-
-
+Mitu unikaalset punkti, iga vähem kui 3min olnud saun tuleb 30min juurde, iga käimata saun 30min, kui on ainult sisse aga mitte välja, siis ka 30min (ajale juurde.)
+Tiimi nimi / nimi - algaeg- lõppaeg - reaalne aeg- trahvi aeg, boonuse aeg.
