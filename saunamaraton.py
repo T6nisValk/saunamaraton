@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import tkinter as tk
+from tkinter import filedialog
 
 
 class SaunaMarathon:
@@ -15,6 +16,22 @@ class SaunaMarathon:
         self.root.geometry("1580x700")
         self.root.title("Saunamaraton")
 
+        self.browse_entry_text = tk.StringVar()
+        self.browse_frame = tk.Frame(self.root)
+        self.browse_frame.pack()
+        
+        self.browse_label = tk.Label(self.browse_frame, text="Faili asukoht: ")
+        self.browse_label.grid(row=0, column=0, padx=5)
+        
+        self.browse_entry = tk.Entry(self.browse_frame, textvariable=self.browse_entry_text)
+        self.browse_entry.grid(row=0, column=1, pady=5)
+
+        self.browse_button = tk.Button(self.browse_frame, text="Browse", command=lambda: self.browse_file())
+        self.browse_button.grid(row=0, column=2, padx=5, pady=5)
+        
+        self.confirm_button = tk.Button(self.browse_frame, text="Run", command=lambda: self.process_data(self.browse_entry.get()))
+        self.confirm_button.grid(row=0, column=3, padx=5)
+        
         self.main_label = tk.Label(self.root, text="TULEMUSED", font="Bold")
         self.main_label.pack(pady=5)
 
@@ -28,8 +45,11 @@ class SaunaMarathon:
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_box.config(yscrollcommand=self.scrollbar.set)
 
-        self.process_data()
-
+    def browse_file(self):
+        self.file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        self.browse_entry_text.set(self.file_path)
+        
+    
     def calculate_time_difference(self, start_time, end_time):
         format_str = "%H:%M:%S"
         start_datetime = datetime.strptime(start_time, format_str)
@@ -76,10 +96,10 @@ class SaunaMarathon:
 
         return time_difference_dict, points_not_done
 
-    def process_data(self):
-        with open("sime_result.txt", encoding="utf-8") as f:
+    def process_data(self, file_path):
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
-
+        self.text_box.delete(1.0, tk.END)
         for index, line in enumerate(lines):
             data = [item for item in line.strip("\n").split(";") if item not in ["", "?"]]
             punktid_ajad = data[10:-1]
