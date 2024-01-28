@@ -174,7 +174,7 @@ def data_process():
             f"\n\tKogu aeg: {data[6]}"
             f"\n\tSauna ajad: \n{''.join(time_difference_output)}\n"
             f"\n\tSauna aja trahv(<3min): {sauna_fine_str}"
-            f"\n\tKäimata saunad: \n{''.join(points_not_done)}\n"
+            f"\n\tKäimata saunad: \n{''.join(points_not_done if points_not_done else "\n\t\t-")}\n"
             f"\n\tKäimata sauna trahvid: {total_fine_str}"
             f"\n\tKogu trahv: {total_fine_str}\n\n"
         )
