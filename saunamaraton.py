@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import ttk, messagebox
 
 
 class SaunaMarathon:
@@ -12,13 +13,18 @@ class SaunaMarathon:
 ]
         self.data_list = []
 
+        self.combobox_items = []
+        
         self.root = tk.Tk()
-        self.root.geometry("1580x700")
+        self.root.geometry("800x700")
         self.root.title("Saunamaraton")
 
+        self.frame_grid = tk.Frame(self.root)
+        self.frame_grid.pack(pady=5)
+        
         self.browse_entry_text = tk.StringVar()
-        self.browse_frame = tk.Frame(self.root)
-        self.browse_frame.pack()
+        self.browse_frame = tk.Frame(self.frame_grid)
+        self.browse_frame.grid(row=0, column=0)
         
         self.browse_label = tk.Label(self.browse_frame, text="Faili asukoht: ")
         self.browse_label.grid(row=0, column=0, padx=5)
@@ -30,26 +36,70 @@ class SaunaMarathon:
         self.browse_button.grid(row=0, column=2, padx=5, pady=5)
         
         self.confirm_button = tk.Button(self.browse_frame, text="Run", command=lambda: self.process_data(self.browse_entry.get()))
-        self.confirm_button.grid(row=0, column=3, padx=5)
+        self.confirm_button.grid(row=0, column=3)
         
-        self.main_label = tk.Label(self.root, text="TULEMUSED", font="Bold")
+        self.individual_data_frame = tk.Frame(self.frame_grid)
+        self.individual_data_frame.grid(row=0, column=1)
+        
+        self.individual_label = tk.Label(self.individual_data_frame, text="Meeskonna andmed: ")
+        self.individual_label.grid(row=1, column=0)
+        
+        self.combobox = ttk.Combobox(self.individual_data_frame, values=self.combobox_items)
+        self.combobox.set("Vali meeskond")
+        self.combobox.grid(row=1, column=1, pady=5)
+        
+        self.combobox_button = tk.Button(self.individual_data_frame, text="Run", command=lambda: self.individual_team())
+        self.combobox_button.grid(row=1, column=2, padx=5)
+
+        self.data_frame = tk.Frame(self.frame_grid)
+        self.data_frame.grid(row=1, column=0, columnspan=2)
+        
+        self.main_label = tk.Label(self.data_frame, text="TULEMUSED", font="Bold")
         self.main_label.pack(pady=5)
 
-        self.data_frame = tk.Frame(self.root)
-        self.data_frame.pack()
-
-        self.text_box = tk.Text(self.data_frame, height=35, width=195)
+        self.text_box = tk.Text(self.data_frame, height=35, width=80)
         self.text_box.pack(side=tk.LEFT)
 
         self.scrollbar = tk.Scrollbar(self.data_frame, command=self.text_box.yview)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_box.config(yscrollcommand=self.scrollbar.set)
 
-    def browse_file(self):
-        self.file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
-        self.browse_entry_text.set(self.file_path)
+    def individual_team(self):
+        index = self.combobox.get().split(".")[0]
+        data = self.data_list[int(index)-1]
+        team_data = tk.Tk()
+        team_data.geometry("700x550")
+        team_data.title(f"{data["Tiimi nimi"]}")
         
-    
+        data_frame = tk.Frame(team_data)
+        data_frame.pack(padx=5, pady=5)
+        text_box = tk.Text(team_data, height=35, width=80)
+        text_box.pack(side=tk.LEFT, padx=5)
+
+        scrollbar = tk.Scrollbar(team_data, command=self.text_box.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        text_box.config(yscrollcommand=scrollbar.set)
+        tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
+        data_to_insert = (
+                f"Rinnanumber: {data['Rinnanumber']} \
+                \nSI-Pulga nr: {data['SI-Pulga nr']} \
+                \nEesnimi: {data['Eesnimi']} \
+                \nPerenimi: {data['Perenimi']} \
+                \nTiimi nimi: {data['Tiimi nimi']} \
+                \nKlass: {data['Klass']} \
+                \nStardiaeg: {data['Stardiaeg']} \
+                \nLõpuaeg: {data['Lõpuaeg']} \
+                \nKogu aeg: {data['Kogu aeg']}\
+                \nVõetud punktid: {data['Võetud punktid']} \
+                \nTehtud punktid: \n{''.join(tehtud_punktid)}\n\n\n"
+            )
+        text_box.insert(tk.END, data_to_insert)
+        team_data.mainloop()
+        
+    def browse_file(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
+        self.browse_entry_text.set(file_path)
+        
     def calculate_time_difference(self, start_time, end_time):
         format_str = "%H:%M:%S"
         start_datetime = datetime.strptime(start_time, format_str)
@@ -97,8 +147,11 @@ class SaunaMarathon:
         return time_difference_dict, points_not_done
 
     def process_data(self, file_path):
-        with open(file_path, encoding="utf-8") as f:
-            lines = f.readlines()
+        try:
+            with open(file_path, encoding="utf-8") as f:
+                lines = f.readlines()
+        except FileNotFoundError:
+            messagebox.showerror(title="Error", message="File not found.")
         self.text_box.delete(1.0, tk.END)
         for index, line in enumerate(lines):
             data = [item for item in line.strip("\n").split(";") if item not in ["", "?"]]
@@ -126,7 +179,7 @@ class SaunaMarathon:
 
             kogu_aeg_plus_fine_obj = kogu_aeg_obj + timedelta(minutes=total_fine_minutes)
             kogu_aeg_plus_fine_str = kogu_aeg_plus_fine_obj.strftime("%H:%M:%S")
-            data_dict = {index+1:{
+            data_dict = {
                 "Rinnanumber": data[0],
                 "SI-Pulga nr": data[1],
                 "Eesnimi": data[2],
@@ -134,20 +187,21 @@ class SaunaMarathon:
                 "Tiimi nimi": data[4],
                 "Klass": data[5],
                 "Stardiaeg": data[9],
-                "L6puaeg": data[-1],
+                "Lõpuaeg": data[-1],
                 "Kogu aeg": data[6],
                 "Kogu aeg pluss trahv": kogu_aeg_plus_fine_str,
-                "V6etud punktid": data[8],
-                "V6etud sauna punktid": str(len(punktid_ajad_dict.keys())),
+                "Võetud punktid": data[8],
+                "Võetud sauna punktid": str(len(punktid_ajad_dict.keys())),
                 "Sauna punktid": [punktid_ajad_dict],
                 "Sauna ajad": sauna_punktid_time_difference,
-                "Points not done": points_not_done,
-                "Total fine": total_fine_str,
-                "V6etud boonuse punktid": str(len(boonused.keys())),
+                "Tegemata punktid": points_not_done,
+                "Kogu trahv": total_fine_str,
+                "Võetud boonuse punktid": str(len(boonused.keys())),
                 "Boonused": [boonused],
-            }}
+            }
             self.data_list.append(data_dict)
-
+            self.combobox_items.append(f"{index+1}.{data[4]}")
+            self.combobox["values"] = self.combobox_items
             time_difference_output = []
             sauna_fine_total = 0
             for key, value in sauna_punktid_time_difference.items():
