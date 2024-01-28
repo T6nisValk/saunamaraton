@@ -53,10 +53,6 @@ def calculate_time_difference(start_time, end_time):
     time_difference = end_datetime - start_datetime
     return time_difference
 
-
-from collections import OrderedDict
-
-
 def calculate_specific_sauna_punktid_time_difference(sauna_punktid_dict):
     pairs_to_calculate = [
         ("11", "12"),
