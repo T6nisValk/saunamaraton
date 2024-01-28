@@ -83,8 +83,8 @@ def calculate_specific_sauna_punktid_time_difference(sauna_punktid_dict):
         end_times = [time for point, time in sauna_punktid_dict.items() if point == end_point]
 
         if start_times and end_times:
-            start_time = start_times[0]  # First occurrence of start point
-            end_time = end_times[-1]  # Last occurrence of end point
+            start_time = start_times[0] 
+            end_time = end_times[-1] 
             time_difference = calculate_time_difference(start_time, end_time)
             time_difference_dict[f"{start_point}-{end_point}"] = str(time_difference)
         else:
