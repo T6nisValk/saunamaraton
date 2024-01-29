@@ -58,7 +58,7 @@ class SaunaMarathon:
         self.data_frame = tk.Frame(self.frame_grid)
         self.data_frame.grid(row=1, column=0, columnspan=2)
         
-        self.main_label = tk.Label(self.data_frame, text="TULEMUSED", font="Bold")
+        self.main_label = tk.Label(self.data_frame, text="TULEMUSED (Failipõhiselt järjekorras)", font="Bold")
         self.main_label.pack(pady=5)
 
         self.text_box = tk.Text(self.data_frame, height=35, width=80)
@@ -76,7 +76,7 @@ class SaunaMarathon:
             
         table = ttk.Treeview(table_root, height=100, columns=("ID", "Tiim", "Nimi", "Alguse aeg", "Lõpu aeg", "Kulunud aeg", "Trahv", "Boonus", "Lõppaeg"), show="headings")
 
-        table.heading("ID", text="ID")
+        table.heading("ID", text="Koht")
         table.heading("Tiim", text="Tiim")
         table.heading("Nimi", text="Nimi")
         table.heading("Alguse aeg", text="Alguse aeg")
