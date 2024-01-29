@@ -73,7 +73,7 @@ class SaunaMarathon:
         table_root = tk.Tk()
         table_root.title("Data table")
         table_root.geometry("1080x500")
-        sorted_data_list = sorted(self.data_list, key=lambda x: x["Lõppaeg"])
+            
         table = ttk.Treeview(table_root, height=100, columns=("ID", "Tiim", "Nimi", "Alguse aeg", "Lõpu aeg", "Kulunud aeg", "Trahv", "Boonus", "Lõppaeg"), show="headings")
 
         table.heading("ID", text="ID")
@@ -86,7 +86,7 @@ class SaunaMarathon:
         table.heading("Boonus", text="Boonus")
         table.heading("Lõppaeg", text="Lõppaeg")
 
-        
+            
         table.column("ID", width=50)
         table.column("Alguse aeg", width=100, anchor="center" )
         table.column("Lõpu aeg", width=100, anchor="center" )
@@ -94,11 +94,15 @@ class SaunaMarathon:
         table.column("Trahv", width=100, anchor="center" )
         table.column("Boonus", width=100, anchor="center" )
         table.column("Lõppaeg", width=100, anchor="center" )
-        
+            
         table.pack(pady=5, padx=5, side=tk.LEFT)
-        
-
-        try:
+            
+        scrollbar = tk.Scrollbar(table_root, command=table.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
+        table.config(yscrollcommand=scrollbar.set)
+            
+        if self.data_list:
+            sorted_data_list = sorted(self.data_list, key=lambda x: x["Lõppaeg"])
             for index, line in enumerate(sorted_data_list):
                     table.insert("","end",values=(f"{index+1}.",
                                                   line["Tiimi nimi"], 
@@ -109,45 +113,46 @@ class SaunaMarathon:
                                                   line["Kogu trahv"],
                                                   line["Boonuste aeg"],
                                                   line["Lõppaeg"]))
-        except AttributeError:
+            
+        else:
             table_root.destroy()
             messagebox.showinfo(title="Info", message="No data.")
-        scrollbar = tk.Scrollbar(table_root, command=table.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
-        table.config(yscrollcommand=scrollbar.set)
         table_root.mainloop()
 
     def individual_team(self):
-        index = self.combobox.get().split(".")[0]
-        data = self.data_list[int(index)-1]
-        team_data = tk.Tk()
-        team_data.geometry("700x550")
-        team_data.title(f"{data["Tiimi nimi"]}")
-        
-        data_frame = tk.Frame(team_data)
-        data_frame.pack(padx=5, pady=5)
-        text_box = tk.Text(team_data, height=35, width=80)
-        text_box.pack(side=tk.LEFT, padx=5)
+        try:
+            index = self.combobox.get().split(".")[0]
+            data = self.data_list[int(index)-1]
+            team_data = tk.Tk()
+            team_data.geometry("700x550")
+            team_data.title(f"{data["Tiimi nimi"]}")
+            
+            data_frame = tk.Frame(team_data)
+            data_frame.pack(padx=5, pady=5)
+            text_box = tk.Text(team_data, height=35, width=80)
+            text_box.pack(side=tk.LEFT, padx=5)
 
-        scrollbar = tk.Scrollbar(team_data, command=text_box.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        text_box.config(yscrollcommand=scrollbar.set)
-        tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
-        data_to_insert = (
-                f"Rinnanumber: {data['Rinnanumber']} \
-                \nSI-Pulga nr: {data['SI-Pulga nr']} \
-                \nEesnimi: {data['Eesnimi']} \
-                \nPerenimi: {data['Perenimi']} \
-                \nTiimi nimi: {data['Tiimi nimi']} \
-                \nKlass: {data['Klass']} \
-                \nStardiaeg: {data['Stardiaeg']} \
-                \nLõpuaeg: {data['Lõpuaeg']} \
-                \nKogu aeg: {data['Kogu aeg']}\
-                \nVõetud punktid: {data['Võetud punktid']} \
-                \nTehtud punktid: \n{''.join(tehtud_punktid)}\n\n\n"
-            )
-        text_box.insert(tk.END, data_to_insert)
-        team_data.mainloop()
+            scrollbar = tk.Scrollbar(team_data, command=text_box.yview)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            text_box.config(yscrollcommand=scrollbar.set)
+            tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
+            data_to_insert = (
+                    f"Rinnanumber: {data['Rinnanumber']} \
+                    \nSI-Pulga nr: {data['SI-Pulga nr']} \
+                    \nEesnimi: {data['Eesnimi']} \
+                    \nPerenimi: {data['Perenimi']} \
+                    \nTiimi nimi: {data['Tiimi nimi']} \
+                    \nKlass: {data['Klass']} \
+                    \nStardiaeg: {data['Stardiaeg']} \
+                    \nLõpuaeg: {data['Lõpuaeg']} \
+                    \nKogu aeg: {data['Kogu aeg']}\
+                    \nVõetud punktid: {data['Võetud punktid']} \
+                    \nTehtud punktid: \n{''.join(tehtud_punktid)}\n\n\n"
+                )
+            text_box.insert(tk.END, data_to_insert)
+            team_data.mainloop()
+        except ValueError:
+            messagebox.showinfo(title="Info", message="No data.")
         
     def browse_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
