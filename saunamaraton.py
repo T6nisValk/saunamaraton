@@ -136,6 +136,7 @@ class SaunaMarathon:
             scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
             text_box.config(yscrollcommand=scrollbar.set)
             tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
+            tegemata_punktid = [punkt for punkt in data["Tegemata punktid"]]
             data_to_insert = (
                     f"Rinnanumber: {data['Rinnanumber']} \
                     \nSI-Pulga nr: {data['SI-Pulga nr']} \
@@ -148,6 +149,7 @@ class SaunaMarathon:
                     \nKogu aeg: {data['Kogu aeg']}\
                     \nVõetud punktid: {data['Võetud punktid']} \
                     \nTehtud punktid: \n{''.join(tehtud_punktid)}\n \
+                    \nTegemata punktid: \n{''.join(tegemata_punktid)}\n \
                     \nBoonused: \n\n\t{"\n\t".join(data["Boonused"][0].keys())}\n\n\n"
                 )
             text_box.insert(tk.END, data_to_insert)
