@@ -147,7 +147,8 @@ class SaunaMarathon:
                     \nLõpuaeg: {data['Lõpuaeg']} \
                     \nKogu aeg: {data['Kogu aeg']}\
                     \nVõetud punktid: {data['Võetud punktid']} \
-                    \nTehtud punktid: \n{''.join(tehtud_punktid)}\n\n\n"
+                    \nTehtud punktid: \n{''.join(tehtud_punktid)}\n \
+                    \nBoonused: \n\n\t{"\n\t".join(data["Boonused"][0].keys())}\n\n\n"
                 )
             text_box.insert(tk.END, data_to_insert)
             team_data.mainloop()
@@ -219,7 +220,7 @@ class SaunaMarathon:
                     for i in range(0, len(punktid_ajad), 2)
                     if punktid_ajad[i] in self.sauna_punktid
                 }
-                boonused = {
+                self.boonused = {
                     punktid_ajad[i]: punktid_ajad[i + 1]
                     for i in range(0, len(punktid_ajad), 2)
                     if punktid_ajad[i] not in self.sauna_punktid
@@ -234,7 +235,7 @@ class SaunaMarathon:
                 käimata_saun_fine_hours, remainder_minutes = divmod(käimata_saun_fine_minutes, 60)
                 käimata_saun_fine_str = f"{käimata_saun_fine_hours:02}:{remainder_minutes:02}:00"
                 
-                boonuste_aeg_minutes = len(boonused) * 10
+                boonuste_aeg_minutes = len(self.boonused) * 10
                 boonuste_aeg_hours, remainder_minutes = divmod(boonuste_aeg_minutes, 60)
                 boonuste_aeg_str = f"{boonuste_aeg_hours:02}:{remainder_minutes:02}:00"
                 
@@ -282,8 +283,8 @@ class SaunaMarathon:
                     "Sauna punktid": [punktid_ajad_dict],
                     "Sauna ajad": sauna_punktid_time_difference,
                     "Tegemata punktid": points_not_done,
-                    "Võetud boonuse punktid": str(len(boonused.keys())),
-                    "Boonused": [boonused],
+                    "Võetud boonuse punktid": str(len(self.boonused.keys())),
+                    "Boonused": [self.boonused],
                 }
                 self.data_list.append(data_dict)
                 self.combobox_items.append(f"{index+1}.{data[4]}")
@@ -294,7 +295,7 @@ class SaunaMarathon:
                 data_to_insert = (
                     f"{index+1}.{data[4]}({data[2]} {data[3]} - {data[1]})"
                     f"\n\n\tVõetud sauna punktid: {str(len(punktid_ajad_dict.keys()))}"
-                    f"\n\tVõetud boonuse punktid: {str(len(boonused.keys()))}"
+                    f"\n\tVõetud boonuse punktid: {str(len(self.boonused.keys()))}"
                     f"\n\tKõik punktid: {data[8]}"
                     f"\n\tAlguse aeg: {data[9]}"
                     f"\n\tLõppaeg: {data[-1]}"
@@ -305,7 +306,7 @@ class SaunaMarathon:
                     f"\n\tAeg trahviga: {kogu_aeg_pluss_trahv.strftime("%H:%M:%S")}"
                     f"\n\tBoonuste aeg: {boonuste_aeg_str}"
                     f"\n\tLõppaeg: {lõpp_tulemus.strftime("%H:%M:%S")}"
-                    f"\n\tBoonused : \n\n\t\t{'\n\t\t'.join(boonused)}\n"
+                    f"\n\tBoonused : \n\n\t\t{'\n\t\t'.join(self.boonused)}\n"
                     f"\n\tSauna ajad: \n{''.join(time_difference_output)}\n"
                     f"\n\tKäimata saunad: \n{''.join(points_not_done if points_not_done else "\n\t\t-")}\n\n\n"
                 )
