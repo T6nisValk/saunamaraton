@@ -215,11 +215,15 @@ class SaunaMarathon:
             for index, line in enumerate(self.lines):
                 data = [item for item in line.strip("\n").split(";") if item not in ["", "?"]]
                 punktid_ajad = data[10:-1]
-                punktid_ajad_dict = {
-                    punktid_ajad[i]: punktid_ajad[i + 1]
-                    for i in range(0, len(punktid_ajad), 2)
-                    if punktid_ajad[i] in self.sauna_punktid
-                }
+                punktid_ajad_dict = {}
+                for i in range(0, len(punktid_ajad), 2):
+                    point = punktid_ajad[i]
+                    time = punktid_ajad[i + 1]
+                    if point.endswith("1"):
+                        if point not in punktid_ajad_dict:
+                            punktid_ajad_dict[point] = time
+                    else:
+                        punktid_ajad_dict[point] = time
                 self.boonused = {
                     punktid_ajad[i]: punktid_ajad[i + 1]
                     for i in range(0, len(punktid_ajad), 2)
