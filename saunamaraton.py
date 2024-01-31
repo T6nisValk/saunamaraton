@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import tkinter as tk
-from tkinter import filedialog
-from tkinter import ttk, messagebox
+from tkinter import filedialog, ttk, messagebox
 
 
 class SaunaMarathon:
@@ -12,19 +11,22 @@ class SaunaMarathon:
             "141", "142", "151", "152", "161", "162", "171", "172", "181", "182",
         ]
         self.data_list = []
-
         self.combobox_items = []
 
         self.root = tk.Tk()
         self.root.geometry("800x700")
         self.root.title("Saunamaraton")
 
-        self.frame_grid = tk.Frame(self.root)
-        self.frame_grid.pack(pady=5)
+        self.create_widgets()
 
+    def create_widgets(self):
+        self.create_browse_frame()
+        self.create_data_frame()
+
+    def create_browse_frame(self):
         self.browse_entry_text = tk.StringVar()
-        self.browse_frame = tk.Frame(self.frame_grid)
-        self.browse_frame.grid(row=0, column=0)
+        self.browse_frame = tk.Frame(self.root)
+        self.browse_frame.pack(pady=5)
 
         self.browse_label = tk.Label(self.browse_frame, text="Faili asukoht: ")
         self.browse_label.grid(row=0, column=0, padx=5)
@@ -42,21 +44,19 @@ class SaunaMarathon:
         self.table_button = tk.Button(self.browse_frame, text="Table", command=lambda: self.table())
         self.table_button.grid(row=0, column=4, padx=5)
 
-        self.individual_data_frame = tk.Frame(self.frame_grid)
-        self.individual_data_frame.grid(row=0, column=1)
+        self.individual_label = tk.Label(self.browse_frame, text="Meeskonna algandmed: ")
+        self.individual_label.grid(row=0, column=5)
 
-        self.individual_label = tk.Label(self.individual_data_frame, text="Meeskonna algandmed: ")
-        self.individual_label.grid(row=1, column=0)
-
-        self.combobox = ttk.Combobox(self.individual_data_frame, values=self.combobox_items)
+        self.combobox = ttk.Combobox(self.browse_frame, values=self.combobox_items)
         self.combobox.set("Vali meeskond")
-        self.combobox.grid(row=1, column=1, pady=5)
+        self.combobox.grid(row=0, column=6, pady=5)
 
-        self.combobox_button = tk.Button(self.individual_data_frame, text="Run", command=lambda: self.individual_team())
-        self.combobox_button.grid(row=1, column=2, padx=5)
+        self.combobox_button = tk.Button(self.browse_frame, text="Run", command=lambda: self.individual_team())
+        self.combobox_button.grid(row=0, column=7, padx=5)
 
-        self.data_frame = tk.Frame(self.frame_grid)
-        self.data_frame.grid(row=1, column=0, columnspan=2)
+    def create_data_frame(self):
+        self.data_frame = tk.Frame(self.root)
+        self.data_frame.pack(pady=5)
 
         self.main_label = tk.Label(self.data_frame, text="TULEMUSED (Failipõhiselt järjekorras)", font="Bold")
         self.main_label.pack(pady=5)
@@ -67,110 +67,6 @@ class SaunaMarathon:
         self.scrollbar = tk.Scrollbar(self.data_frame, command=self.text_box.yview)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_box.config(yscrollcommand=self.scrollbar.set)
-
-    def table(self):
-
-        def copy_from_table(table, event=None):
-            data = table.selection()
-
-            values = ""
-
-            for item in data:
-                value = table.item(item, "values")
-                values += "\t".join(map(str, value)) + "\n"
-
-            self.root.clipboard_clear()
-            self.root.clipboard_append(values)
-            self.root.update()
-
-        table_root = tk.Tk()
-        table_root.title("Data table")
-        table_root.geometry("1080x500")
-
-        table = ttk.Treeview(table_root, height=100, columns=("ID", "Tiim", "Nimi", "Alguse aeg",
-                             "Lõpu aeg", "Kulunud aeg", "Trahv", "Boonus", "Lõppaeg"), show="headings")
-
-        table.heading("ID", text="Koht")
-        table.heading("Tiim", text="Tiim")
-        table.heading("Nimi", text="Nimi")
-        table.heading("Alguse aeg", text="Alguse aeg")
-        table.heading("Lõpu aeg", text="Lõpu aeg")
-        table.heading("Kulunud aeg", text="Kulunud aeg")
-        table.heading("Trahv", text="Trahv")
-        table.heading("Boonus", text="Boonus")
-        table.heading("Lõppaeg", text="Lõppaeg")
-
-        table.column("ID", width=50)
-        table.column("Alguse aeg", width=100, anchor="center")
-        table.column("Lõpu aeg", width=100, anchor="center")
-        table.column("Kulunud aeg", width=100, anchor="center")
-        table.column("Trahv", width=100, anchor="center")
-        table.column("Boonus", width=100, anchor="center")
-        table.column("Lõppaeg", width=100, anchor="center")
-
-        table.pack(pady=5, padx=5, side=tk.LEFT)
-
-        scrollbar = tk.Scrollbar(table_root, command=table.yview)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
-        table.config(yscrollcommand=scrollbar.set)
-
-        table.bind("<Control-Key-c>", lambda x: copy_from_table(table, x))
-
-        if self.data_list:
-            sorted_data_list = sorted(self.data_list, key=lambda x: x["Lõppaeg"])
-            for index, line in enumerate(sorted_data_list):
-                table.insert("", "end", values=(f"{index+1}.",
-                                                line["Tiimi nimi"],
-                                                f"{line["Eesnimi"]} {line["Perenimi"]}",
-                                                line["Stardiaeg"],
-                                                line["Lõpuaeg"],
-                                                line["Kogu aeg"],
-                                                line["Kogu trahv"],
-                                                line["Boonuste aeg"],
-                                                line["Lõppaeg"]))
-
-        else:
-            table_root.destroy()
-            messagebox.showinfo(title="Info", message="No data.")
-        table_root.mainloop()
-
-    def individual_team(self):
-        try:
-            index = self.combobox.get().split(".")[0]
-            data = self.data_list[int(index)-1]
-            team_data = tk.Tk()
-            team_data.geometry("700x550")
-            team_data.title(f"{data["Tiimi nimi"]}")
-
-            data_frame = tk.Frame(team_data)
-            data_frame.pack(padx=5, pady=5)
-            text_box = tk.Text(team_data, height=35, width=80)
-            text_box.pack(side=tk.LEFT, padx=5)
-
-            scrollbar = tk.Scrollbar(team_data, command=text_box.yview)
-            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-            text_box.config(yscrollcommand=scrollbar.set)
-            tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
-            tegemata_punktid = [punkt for punkt in data["Tegemata punktid"]]
-            data_to_insert = (
-                f"Rinnanumber: {data['Rinnanumber']} \
-                    \nSI-Pulga nr: {data['SI-Pulga nr']} \
-                    \nEesnimi: {data['Eesnimi']} \
-                    \nPerenimi: {data['Perenimi']} \
-                    \nTiimi nimi: {data['Tiimi nimi']} \
-                    \nKlass: {data['Klass']} \
-                    \nStardiaeg: {data['Stardiaeg']} \
-                    \nLõpuaeg: {data['Lõpuaeg']} \
-                    \nKogu aeg: {data['Kogu aeg']}\
-                    \nVõetud punktid: {data['Võetud punktid']} \
-                    \nTehtud punktid: \n{''.join(tehtud_punktid)}\n \
-                    \nTegemata punktid: \n{''.join(tegemata_punktid)}\n \
-                    \nBoonused: \n\n\t{"\n\t".join(data["Boonused"][0].keys())}\n\n\n"
-            )
-            text_box.insert(tk.END, data_to_insert)
-            team_data.mainloop()
-        except ValueError:
-            messagebox.showinfo(title="Info", message="No data.")
 
     def browse_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
@@ -264,6 +160,7 @@ class SaunaMarathon:
                     time_difference = datetime.strptime(value, "%H:%M:%S") - datetime.strptime("00:00:00", "%H:%M:%S")
                     if time_difference < timedelta(minutes=3):
                         sauna_time_fine_total_minutes += 30
+
                 sauna_time_fine_total_hours, remainder_minutes = divmod(sauna_time_fine_total_minutes, 60)
                 sauna_time_fine_total_str = f"{sauna_time_fine_total_hours:02}:{remainder_minutes:02}:00"
 
@@ -330,6 +227,109 @@ class SaunaMarathon:
                 self.text_box.insert(tk.END, data_to_insert)
         except FileNotFoundError:
             messagebox.showerror(title="Error", message="File not found.")
+
+    def individual_team(self):
+        try:
+            index = self.combobox.get().split(".")[0]
+            data = self.data_list[int(index)-1]
+            team_data = tk.Tk()
+            team_data.geometry("700x550")
+            team_data.title(f"{data["Tiimi nimi"]}")
+
+            data_frame = tk.Frame(team_data)
+            data_frame.pack(padx=5, pady=5)
+            text_box = tk.Text(team_data, height=35, width=80)
+            text_box.pack(side=tk.LEFT, padx=5)
+
+            scrollbar = tk.Scrollbar(team_data, command=text_box.yview)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            text_box.config(yscrollcommand=scrollbar.set)
+            tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
+            tegemata_punktid = [punkt for punkt in data["Tegemata punktid"]]
+            data_to_insert = (
+                f"Rinnanumber: {data['Rinnanumber']} \
+                    \nSI-Pulga nr: {data['SI-Pulga nr']} \
+                    \nEesnimi: {data['Eesnimi']} \
+                    \nPerenimi: {data['Perenimi']} \
+                    \nTiimi nimi: {data['Tiimi nimi']} \
+                    \nKlass: {data['Klass']} \
+                    \nStardiaeg: {data['Stardiaeg']} \
+                    \nLõpuaeg: {data['Lõpuaeg']} \
+                    \nKogu aeg: {data['Kogu aeg']}\
+                    \nVõetud punktid: {data['Võetud punktid']} \
+                    \nTehtud punktid: \n{''.join(tehtud_punktid)}\n \
+                    \nTegemata punktid: \n{''.join(tegemata_punktid)}\n \
+                    \nBoonused: \n\n\t{"\n\t".join(data["Boonused"][0].keys())}\n\n\n"
+            )
+            text_box.insert(tk.END, data_to_insert)
+            team_data.mainloop()
+        except ValueError:
+            messagebox.showinfo(title="Info", message="No data.")
+
+    def table(self):
+        def copy_from_table(table, event=None):
+            data = table.selection()
+
+            values = ""
+
+            for item in data:
+                value = table.item(item, "values")
+                values += "\t".join(map(str, value)) + "\n"
+
+            self.root.clipboard_clear()
+            self.root.clipboard_append(values)
+            self.root.update()
+
+        table_root = tk.Tk()
+        table_root.title("Data table")
+        table_root.geometry("1080x500")
+
+        table = ttk.Treeview(table_root, height=100, columns=("ID", "Tiim", "Nimi", "Alguse aeg",
+                             "Lõpu aeg", "Kulunud aeg", "Trahv", "Boonus", "Lõppaeg"), show="headings")
+
+        table.heading("ID", text="Koht")
+        table.heading("Tiim", text="Tiim")
+        table.heading("Nimi", text="Nimi")
+        table.heading("Alguse aeg", text="Alguse aeg")
+        table.heading("Lõpu aeg", text="Lõpu aeg")
+        table.heading("Kulunud aeg", text="Kulunud aeg")
+        table.heading("Trahv", text="Trahv")
+        table.heading("Boonus", text="Boonus")
+        table.heading("Lõppaeg", text="Lõppaeg")
+
+        table.column("ID", width=50)
+        table.column("Alguse aeg", width=100, anchor="center")
+        table.column("Lõpu aeg", width=100, anchor="center")
+        table.column("Kulunud aeg", width=100, anchor="center")
+        table.column("Trahv", width=100, anchor="center")
+        table.column("Boonus", width=100, anchor="center")
+        table.column("Lõppaeg", width=100, anchor="center")
+
+        table.pack(pady=5, padx=5, side=tk.LEFT)
+
+        scrollbar = tk.Scrollbar(table_root, command=table.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
+        table.config(yscrollcommand=scrollbar.set)
+
+        table.bind("<Control-Key-c>", lambda x: copy_from_table(table, x))
+
+        if self.data_list:
+            sorted_data_list = sorted(self.data_list, key=lambda x: x["Lõppaeg"])
+            for index, line in enumerate(sorted_data_list):
+                table.insert("", "end", values=(f"{index+1}.",
+                                                line["Tiimi nimi"],
+                                                f"{line["Eesnimi"]} {line["Perenimi"]}",
+                                                line["Stardiaeg"],
+                                                line["Lõpuaeg"],
+                                                line["Kogu aeg"],
+                                                line["Kogu trahv"],
+                                                line["Boonuste aeg"],
+                                                line["Lõppaeg"]))
+
+        else:
+            table_root.destroy()
+            messagebox.showinfo(title="Info", message="No data.")
+        table_root.mainloop()
 
     def run(self):
         self.root.mainloop()
