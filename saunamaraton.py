@@ -98,16 +98,13 @@ class SaunaMarathon:
             ("151", "152"),
             ("161", "162"),
             ("171", "172"),
-            ("181", "182"),
-        ]
+            ("181", "182"),]
 
         time_difference_dict = {}
         points_not_done = []
-
         for start_point, end_point in pairs_to_calculate:
             start_times = [time for point, time in sauna_punktid_dict.items() if point == start_point]
             end_times = [time for point, time in sauna_punktid_dict.items() if point == end_point]
-
             if start_times and end_times:
                 start_time = start_times[0]
                 end_time = end_times[-1]
@@ -115,14 +112,12 @@ class SaunaMarathon:
                 time_difference_dict[f"{start_point}-{end_point}"] = str(time_difference)
             else:
                 points_not_done.append(f"\n\t\t{start_point}-{end_point}")
-
         return time_difference_dict, points_not_done
 
     def process_data(self, file_path):
         try:
             with open(file_path, encoding="utf-8") as f:
                 self.lines = f.readlines()
-
             self.text_box.delete(1.0, tk.END)
             for index, line in enumerate(self.lines):
                 data = [item for item in line.strip("\n").split(";") if item not in ["", "?"]]
@@ -139,20 +134,15 @@ class SaunaMarathon:
                 self.boonused = {
                     punktid_ajad[i]: punktid_ajad[i + 1]
                     for i in range(0, len(punktid_ajad), 2)
-                    if punktid_ajad[i] not in self.sauna_punktid
-                }
+                    if punktid_ajad[i] not in self.sauna_punktid}
                 sauna_punktid_time_difference, points_not_done = self.calculate_specific_sauna_punktid_time_difference(
-                    punktid_ajad_dict
-                )
-
+                    punktid_ajad_dict)
                 käimata_saun_fine_minutes = len(points_not_done) * 30
                 käimata_saun_fine_hours, remainder_minutes = divmod(käimata_saun_fine_minutes, 60)
                 käimata_saun_fine_str = f"{käimata_saun_fine_hours:02}:{remainder_minutes:02}:00"
-
                 boonuste_aeg_minutes = len(self.boonused) * 10
                 boonuste_aeg_hours, remainder_minutes = divmod(boonuste_aeg_minutes, 60)
                 boonuste_aeg_str = f"{boonuste_aeg_hours:02}:{remainder_minutes:02}:00"
-
                 time_difference_output = []
                 sauna_time_fine_total_minutes = 0
                 for key, value in sauna_punktid_time_difference.items():
@@ -160,23 +150,18 @@ class SaunaMarathon:
                     time_difference = datetime.strptime(value, "%H:%M:%S") - datetime.strptime("00:00:00", "%H:%M:%S")
                     if time_difference < timedelta(minutes=3):
                         sauna_time_fine_total_minutes += 30
-
                 sauna_time_fine_total_hours, remainder_minutes = divmod(sauna_time_fine_total_minutes, 60)
                 sauna_time_fine_total_str = f"{sauna_time_fine_total_hours:02}:{remainder_minutes:02}:00"
-
                 kogu_trahv_minutes = sauna_time_fine_total_minutes + käimata_saun_fine_minutes
                 kogu_trahv_hours, remainder_minutes = divmod(kogu_trahv_minutes, 60)
                 kogu_trahv_str = f"{kogu_trahv_hours:02}:{remainder_minutes:02}:00"
-
                 kogu_aeg = datetime.strptime(data[6], "%H:%M:%S")
                 kogu_trahv = datetime.strptime(kogu_trahv_str, "%H:%M:%S")
                 kogu_aeg_pluss_trahv = kogu_aeg + timedelta(hours=kogu_trahv.hour,
                                                             minutes=kogu_trahv.minute, seconds=kogu_trahv.second)
-
                 boonuste_aeg = datetime.strptime(boonuste_aeg_str, "%H:%M:%S")
                 lõpp_tulemus = kogu_aeg_pluss_trahv - timedelta(hours=boonuste_aeg.hour,
                                                                 minutes=boonuste_aeg.minute, seconds=boonuste_aeg.second)
-
                 data_dict = {
                     "Rinnanumber": data[0],
                     "SI-Pulga nr": data[1],
@@ -235,12 +220,10 @@ class SaunaMarathon:
             team_data = tk.Tk()
             team_data.geometry("700x550")
             team_data.title(f"{data["Tiimi nimi"]}")
-
             data_frame = tk.Frame(team_data)
             data_frame.pack(padx=5, pady=5)
             text_box = tk.Text(team_data, height=35, width=80)
             text_box.pack(side=tk.LEFT, padx=5)
-
             scrollbar = tk.Scrollbar(team_data, command=text_box.yview)
             scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
             text_box.config(yscrollcommand=scrollbar.set)
@@ -269,13 +252,10 @@ class SaunaMarathon:
     def table(self):
         def copy_from_table(table, event=None):
             data = table.selection()
-
             values = ""
-
             for item in data:
                 value = table.item(item, "values")
                 values += "\t".join(map(str, value)) + "\n"
-
             self.root.clipboard_clear()
             self.root.clipboard_append(values)
             self.root.update()
@@ -283,7 +263,6 @@ class SaunaMarathon:
         table_root = tk.Tk()
         table_root.title("Data table")
         table_root.geometry("1080x500")
-
         table = ttk.Treeview(table_root, height=100, columns=("ID", "Tiim", "Nimi", "Alguse aeg",
                              "Lõpu aeg", "Kulunud aeg", "Trahv", "Boonus", "Lõppaeg"), show="headings")
 
@@ -296,7 +275,6 @@ class SaunaMarathon:
         table.heading("Trahv", text="Trahv")
         table.heading("Boonus", text="Boonus")
         table.heading("Lõppaeg", text="Lõppaeg")
-
         table.column("ID", width=50)
         table.column("Alguse aeg", width=100, anchor="center")
         table.column("Lõpu aeg", width=100, anchor="center")
@@ -304,15 +282,11 @@ class SaunaMarathon:
         table.column("Trahv", width=100, anchor="center")
         table.column("Boonus", width=100, anchor="center")
         table.column("Lõppaeg", width=100, anchor="center")
-
         table.pack(pady=5, padx=5, side=tk.LEFT)
-
         scrollbar = tk.Scrollbar(table_root, command=table.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
         table.config(yscrollcommand=scrollbar.set)
-
         table.bind("<Control-Key-c>", lambda x: copy_from_table(table, x))
-
         if self.data_list:
             sorted_data_list = sorted(self.data_list, key=lambda x: x["Lõppaeg"])
             for index, line in enumerate(sorted_data_list):
