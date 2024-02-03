@@ -107,6 +107,7 @@ class SaunaMarathon:
 
         time_difference_dict = {}
         points_not_done = []
+        print(sauna_punktid_dict)
         for start_point, end_point in pairs_to_calculate:
             start_times = [time for point, time in sauna_punktid_dict.items() if point ==
                            start_point]
@@ -114,8 +115,12 @@ class SaunaMarathon:
             if start_times and end_times:
                 start_time = start_times[0]
                 end_time = end_times[-1]
-                time_difference = self.calculate_time_difference(start_time, end_time)
-                time_difference_dict[f"{start_point}-{end_point}"] = str(time_difference)
+                if start_time > end_time:
+                    points_not_done.append(f"\n\t\t{start_point}-{end_point}")
+                    continue
+                else:
+                    time_difference = self.calculate_time_difference(start_time, end_time)
+                    time_difference_dict[f"{start_point}-{end_point}"] = str(time_difference)
             else:
                 points_not_done.append(f"\n\t\t{start_point}-{end_point}")
         return time_difference_dict, points_not_done
@@ -127,7 +132,9 @@ class SaunaMarathon:
             self.text_box.delete(1.0, tk.END)
             for index, line in enumerate(self.lines):
                 data = [item for item in line.strip("\n").split(";") if item not in ["", "?"]]
+
                 punktid_ajad = data[10:-1]
+
                 punktid_ajad_dict = {}
                 for i in range(0, len(punktid_ajad), 2):
                     point = punktid_ajad[i]
@@ -152,15 +159,18 @@ class SaunaMarathon:
                 time_difference_output = []
                 secret_sauna_times = []
                 sauna_time_fine_total_minutes = 0
+                if index in [45]:
+                    print(sauna_punktid_time_difference)
                 for key, value in sauna_punktid_time_difference.items():
                     if key in ["111-112", "151-152"]:
                         secret_sauna_times.append(f"{key}:{value}")
                         continue
                     else:
                         time_difference_output.append(f"\n\t\t{key}: {value}")
-                        time_difference = datetime.strptime(
-                            value, "%H:%M:%S") - datetime.strptime("00:00:00", "%H:%M:%S")
-                        if time_difference < timedelta(minutes=3):
+                        print(key, value)
+                        value = datetime.strptime(value, "%H:%M:%S")
+                        time_to_compare = datetime.strptime("00:03:00", "%H:%M:%S")
+                        if value < time_to_compare:
                             sauna_time_fine_total_minutes += 15
 
                 sauna_time_fine_total_hours, remainder_minutes = divmod(
