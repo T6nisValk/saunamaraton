@@ -143,7 +143,7 @@ class SaunaMarathon:
                     if punktid_ajad[i] not in self.sauna_punktid}
                 sauna_punktid_time_difference, points_not_done = self.calculate_specific_sauna_punktid_time_difference(
                     punktid_ajad_dict)
-                käimata_saun_fine_minutes = len(points_not_done) * 30
+                käimata_saun_fine_minutes = len(points_not_done) * 15
                 käimata_saun_fine_hours, remainder_minutes = divmod(käimata_saun_fine_minutes, 60)
                 käimata_saun_fine_str = f"{käimata_saun_fine_hours:02}:{remainder_minutes:02}:00"
                 boonuste_aeg_minutes = len(self.boonused) * 10
@@ -161,7 +161,7 @@ class SaunaMarathon:
                         time_difference = datetime.strptime(
                             value, "%H:%M:%S") - datetime.strptime("00:00:00", "%H:%M:%S")
                         if time_difference < timedelta(minutes=3):
-                            sauna_time_fine_total_minutes += 30
+                            sauna_time_fine_total_minutes += 15
 
                 sauna_time_fine_total_hours, remainder_minutes = divmod(
                     sauna_time_fine_total_minutes, 60)
