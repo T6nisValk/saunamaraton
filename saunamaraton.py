@@ -10,7 +10,7 @@ class SaunaMarathon:
             "81", "82", "91", "92", "101", "102", "111", "112", "121", "122", "131", "132",
             "141", "142", "151", "152", "161", "162", "171", "172", "181", "182",
         ]
-        self.data_list = []
+
         self.combobox_items = []
 
         self.root = tk.Tk()
@@ -107,7 +107,6 @@ class SaunaMarathon:
 
         time_difference_dict = {}
         points_not_done = []
-        print(sauna_punktid_dict)
         for start_point, end_point in pairs_to_calculate:
             start_times = [time for point, time in sauna_punktid_dict.items() if point ==
                            start_point]
@@ -126,6 +125,7 @@ class SaunaMarathon:
         return time_difference_dict, points_not_done
 
     def process_data(self, file_path):
+        self.data_list = []
         try:
             with open(file_path, encoding="utf-8") as f:
                 self.lines = f.readlines()
@@ -159,15 +159,12 @@ class SaunaMarathon:
                 time_difference_output = []
                 secret_sauna_times = []
                 sauna_time_fine_total_minutes = 0
-                if index in [45]:
-                    print(sauna_punktid_time_difference)
                 for key, value in sauna_punktid_time_difference.items():
                     if key in ["111-112", "151-152"]:
                         secret_sauna_times.append(f"{key}:{value}")
                         continue
                     else:
                         time_difference_output.append(f"\n\t\t{key}: {value}")
-                        print(key, value)
                         value = datetime.strptime(value, "%H:%M:%S")
                         time_to_compare = datetime.strptime("00:03:00", "%H:%M:%S")
                         if value < time_to_compare:
@@ -347,6 +344,7 @@ class SaunaMarathon:
         table_root.mainloop()
 
     def run(self):
+
         self.root.mainloop()
 
 
