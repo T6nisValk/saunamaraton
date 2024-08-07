@@ -1,0 +1,32 @@
+Saunas oldud ajad lahutada lõppajast.
+No secret sauna
+Mihkel ütleb veel
+KV Võistlus
+
+Lõppajast tuleb lahutada punktides sees oldud aeg ehk Lõppaeg - (OUT - IN) - (OUT-IN) - jne
+131 ja 142 on koos ehk 142 - 131.
+
+Esimene IN läheb arvesse ning viimane OUT (juhul kui on topelt märkeid vms).
+
+Kui üks kahest, kas IN või OUT on võtmata, siis võiks programm märku anda.
+
+Tulemused Tabeli kujul nagu saunamaratonil - Jrk nr, tiimi nimi, stardiaeg, lõpetamise aeg, Lõppaeg(punktides oldud aeg maha lahutatud), võtmata punktid(punktide nr-id).
+
+
+Punktide nr-id on ette antud:
+	Punkt		IN	OUT
+
+1	B (IN ja OUT)	11	12	B IN	B OUT
+2	C (IN ja OUT)	21	22	C IN	C OUT
+3	D (IN ja OUT)	31	32	D IN	D OUT
+4	E (IN ja OUT)	41	42	E IN	E OUT
+5	F (IN ja OUT)	51	52	F IN	F OUT
+6	G (IN ja OUT)	61	62	G IN	G OUT
+7	H (IN ja OUT)	71	72	H IN	H OUT
+8	I (IN ja OUT)	81	82	I IN	I OUT
+9	J (IN ja OUT)	91	92	J IN	J OUT
+10	K (IN ja OUT)	101	102	K IN	K OUT
+11	L (IN ja OUT)	111	112	L IN	L OUT
+12	M (IN ja OUT)	121	122	M IN	M OUT
+13	N (ainult IN)	131		N IN	
+14	O (ainult OUT)		142		O OUT

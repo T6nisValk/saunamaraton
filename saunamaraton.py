@@ -1,22 +1,54 @@
 from datetime import datetime, timedelta
 import tkinter as tk
 from tkinter import filedialog, ttk, messagebox
+import customtkinter as ctk
 
 
 class SaunaMarathon:
     def __init__(self):
         self.sauna_punktid = [
-            "11", "12", "21", "22", "31", "32", "41", "42", "51", "52", "61", "62", "71", "72",
-            "81", "82", "91", "92", "101", "102", "111", "112", "121", "122", "131", "132",
-            "141", "142", "151", "152", "161", "162", "171", "172", "181", "182",
+            "11",
+            "12",
+            "21",
+            "22",
+            "31",
+            "32",
+            "41",
+            "42",
+            "51",
+            "52",
+            "61",
+            "62",
+            "71",
+            "72",
+            "81",
+            "82",
+            "91",
+            "92",
+            "101",
+            "102",
+            "111",
+            "112",
+            "121",
+            "122",
+            "131",
+            "142",
+            "151",
+            "152",
+            "161",
+            "162",
+            "171",
+            "172",
+            "181",
+            "182",
         ]
 
         self.combobox_items = []
 
-        self.root = tk.Tk()
+        self.root = ctk.CTk()
         self.root.geometry("800x700")
         self.root.title("Saunamaraton")
-
+        ctk.set_default_color_theme("green")
         self.create_widgets()
 
     def create_widgets(self):
@@ -25,56 +57,52 @@ class SaunaMarathon:
 
     def create_browse_frame(self):
         self.browse_entry_text = tk.StringVar()
-        self.browse_frame = tk.Frame(self.root)
+        self.browse_frame = ctk.CTkFrame(self.root)
         self.browse_frame.pack(pady=5)
 
-        self.browse_label = tk.Label(self.browse_frame, text="Faili asukoht: ")
+        self.browse_label = ctk.CTkLabel(self.browse_frame, text="Faili asukoht: ")
         self.browse_label.grid(row=0, column=0, padx=5)
 
-        self.browse_entry = tk.Entry(self.browse_frame, textvariable=self.browse_entry_text)
+        self.browse_entry = ctk.CTkEntry(self.browse_frame, textvariable=self.browse_entry_text)
         self.browse_entry.grid(row=0, column=1, pady=5)
 
-        self.browse_button = tk.Button(self.browse_frame, text="Browse",
-                                       command=lambda: self.browse_file())
+        self.browse_button = ctk.CTkButton(
+            self.browse_frame, text="Browse", width=1, command=lambda: self.browse_file()
+        )
         self.browse_button.grid(row=0, column=2, padx=5, pady=5)
 
-        self.confirm_button = tk.Button(self.browse_frame, text="Run",
-                                        command=lambda: self.process_data(self.browse_entry.get()))
+        self.confirm_button = ctk.CTkButton(
+            self.browse_frame, text="Run", width=1, command=lambda: self.process_data(self.browse_entry.get())
+        )
         self.confirm_button.grid(row=0, column=3)
 
-        self.table_button = tk.Button(self.browse_frame, text="Table", command=lambda: self.table())
+        self.table_button = ctk.CTkButton(self.browse_frame, text="Table", width=1, command=lambda: self.table())
         self.table_button.grid(row=0, column=4, padx=5)
 
-        self.individual_label = tk.Label(self.browse_frame, text="Meeskonna algandmed: ")
+        self.individual_label = ctk.CTkLabel(self.browse_frame, text="Meeskonna algandmed: ")
         self.individual_label.grid(row=0, column=5)
 
         self.combobox = ttk.Combobox(self.browse_frame, values=self.combobox_items)
         self.combobox.set("Vali meeskond")
         self.combobox.grid(row=0, column=6, pady=5)
 
-        self.combobox_button = tk.Button(
-            self.browse_frame, text="Run", command=lambda: self.individual_team())
+        self.combobox_button = ctk.CTkButton(
+            self.browse_frame, text="Run", width=1, command=lambda: self.individual_team()
+        )
         self.combobox_button.grid(row=0, column=7, padx=5)
 
     def create_data_frame(self):
-        self.data_frame = tk.Frame(self.root)
+        self.data_frame = ctk.CTkFrame(self.root)
         self.data_frame.pack(pady=5)
 
-        self.main_label = tk.Label(
-            self.data_frame, text="TULEMUSED (Failipõhiselt järjekorras)", font="Bold")
+        self.main_label = ctk.CTkLabel(self.data_frame, text="TULEMUSED (Failipõhiselt järjekorras)")
         self.main_label.pack(pady=5)
 
-        self.text_box = tk.Text(self.data_frame, height=35, width=80)
+        self.text_box = ctk.CTkTextbox(self.data_frame, height=800, width=400)
         self.text_box.pack(side=tk.LEFT)
 
-        self.scrollbar = tk.Scrollbar(self.data_frame, command=self.text_box.yview)
-        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        self.text_box.config(yscrollcommand=self.scrollbar.set)
-
     def browse_file(self):
-        file_path = filedialog.askopenfilename(
-            filetypes=[("Text files", "*.txt"),
-                       ("All files", "*.*")])
+        file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt"), ("All files", "*.*")])
         self.browse_entry_text.set(file_path)
 
     def calculate_time_difference(self, start_time, end_time):
@@ -98,18 +126,17 @@ class SaunaMarathon:
             ("101", "102"),
             ("111", "112"),
             ("121", "122"),
-            ("131", "132"),
-            ("141", "142"),
+            ("131", "142"),
             ("151", "152"),
             ("161", "162"),
             ("171", "172"),
-            ("181", "182"),]
+            ("181", "182"),
+        ]
 
         time_difference_dict = {}
         points_not_done = []
         for start_point, end_point in pairs_to_calculate:
-            start_times = [time for point, time in sauna_punktid_dict.items() if point ==
-                           start_point]
+            start_times = [time for point, time in sauna_punktid_dict.items() if point == start_point]
             end_times = [time for point, time in sauna_punktid_dict.items() if point == end_point]
             if start_times and end_times:
                 start_time = start_times[0]
@@ -123,6 +150,27 @@ class SaunaMarathon:
             else:
                 points_not_done.append(f"\n\t\t{start_point}-{end_point}")
         return time_difference_dict, points_not_done
+
+    def str_to_timedelta(self, time_str):
+        h, m, s = map(int, time_str.split(":"))
+        return timedelta(hours=h, minutes=m, seconds=s)
+
+    def sum_time_strings(self, *time_strs):
+        total_timedelta = timedelta()
+        for time_str in time_strs:
+            total_timedelta += self.str_to_timedelta(time_str)
+        return total_timedelta
+
+    def div_times(self, one, two):
+        total_timedelta = self.str_to_timedelta(one) - self.str_to_timedelta(two)
+        total_timedelta = self.timedelta_to_str(total_timedelta)
+        return total_timedelta
+
+    def timedelta_to_str(self, td):
+        total_seconds = int(td.total_seconds())
+        hours, remainder = divmod(total_seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        return f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def process_data(self, file_path):
         self.data_list = []
@@ -147,9 +195,11 @@ class SaunaMarathon:
                 self.boonused = {
                     punktid_ajad[i]: punktid_ajad[i + 1]
                     for i in range(0, len(punktid_ajad), 2)
-                    if punktid_ajad[i] not in self.sauna_punktid}
+                    if punktid_ajad[i] not in self.sauna_punktid
+                }
                 sauna_punktid_time_difference, points_not_done = self.calculate_specific_sauna_punktid_time_difference(
-                    punktid_ajad_dict)
+                    punktid_ajad_dict
+                )
                 käimata_saun_fine_minutes = len(points_not_done) * 15
                 käimata_saun_fine_hours, remainder_minutes = divmod(käimata_saun_fine_minutes, 60)
                 käimata_saun_fine_str = f"{käimata_saun_fine_hours:02}:{remainder_minutes:02}:00"
@@ -159,33 +209,32 @@ class SaunaMarathon:
                 time_difference_output = []
                 secret_sauna_times = []
                 sauna_time_fine_total_minutes = 0
+                sauna_times = []
                 for key, value in sauna_punktid_time_difference.items():
-                    if key in ["111-112", "151-152"]:
-                        secret_sauna_times.append(f"{key}:{value}")
-                        continue
-                    else:
-                        time_difference_output.append(f"\n\t\t{key}: {value}")
-                        value = datetime.strptime(value, "%H:%M:%S")
-                        time_to_compare = datetime.strptime("00:03:00", "%H:%M:%S")
-                        if value < time_to_compare:
-                            sauna_time_fine_total_minutes += 15
+                    sauna_times.append(value)
+                    time_difference_output.append(f"\n\t\t{key}: {value}")
+                    value = datetime.strptime(value, "%H:%M:%S")
+                    time_to_compare = datetime.strptime("00:03:00", "%H:%M:%S")
+                    if value < time_to_compare:
+                        sauna_time_fine_total_minutes += 15
+                total_timedelta = self.sum_time_strings(*sauna_times)
+                total_time_str = self.timedelta_to_str(total_timedelta)
 
-                sauna_time_fine_total_hours, remainder_minutes = divmod(
-                    sauna_time_fine_total_minutes, 60)
-                sauna_time_fine_total_str = \
-                    f"{sauna_time_fine_total_hours:02}:{remainder_minutes:02}:00"
+                sauna_time_fine_total_hours, remainder_minutes = divmod(sauna_time_fine_total_minutes, 60)
+                sauna_time_fine_total_str = f"{sauna_time_fine_total_hours:02}:{remainder_minutes:02}:00"
                 kogu_trahv_minutes = sauna_time_fine_total_minutes + käimata_saun_fine_minutes
                 kogu_trahv_hours, remainder_minutes = divmod(kogu_trahv_minutes, 60)
                 kogu_trahv_str = f"{kogu_trahv_hours:02}:{remainder_minutes:02}:00"
                 kogu_aeg = datetime.strptime(data[6], "%H:%M:%S")
                 kogu_trahv = datetime.strptime(kogu_trahv_str, "%H:%M:%S")
-                kogu_aeg_pluss_trahv = kogu_aeg + timedelta(hours=kogu_trahv.hour,
-                                                            minutes=kogu_trahv.minute,
-                                                            seconds=kogu_trahv.second)
+                kogu_aeg_pluss_trahv = kogu_aeg + timedelta(
+                    hours=kogu_trahv.hour, minutes=kogu_trahv.minute, seconds=kogu_trahv.second
+                )
                 boonuste_aeg = datetime.strptime(boonuste_aeg_str, "%H:%M:%S")
                 lõpp_tulemus = kogu_aeg_pluss_trahv - timedelta(
-                    hours=boonuste_aeg.hour, minutes=boonuste_aeg.minute,
-                    seconds=boonuste_aeg.second)
+                    hours=boonuste_aeg.hour, minutes=boonuste_aeg.minute, seconds=boonuste_aeg.second
+                )
+                kulunud_aeg_miinus_sauna_ajad = self.div_times(data[6], total_time_str)
                 data_dict = {
                     "Rinnanumber": data[0],
                     "SI-Pulga nr": data[1],
@@ -210,27 +259,25 @@ class SaunaMarathon:
                     "Tegemata punktid": points_not_done,
                     "Võetud boonuse punktid": str(len(self.boonused.keys())),
                     "Boonused": [self.boonused],
+                    "Sauna ajad kokku": total_time_str,
+                    "Kulunud aeg miinus sauna ajad": kulunud_aeg_miinus_sauna_ajad,
+                    "Tegemata punktide kogus": len(points_not_done),
                 }
                 self.data_list.append(data_dict)
                 self.combobox_items.append(f"{index+1}.{data[4]}")
-                self.combobox["values"] = self.combobox_items
+                self.combobox.configure(values=self.combobox_items)
 
                 data_to_insert = (
                     f"{index+1}.{data[4]}({data[2]} {data[3]} - {data[1]})"
                     f"\n\n\tVõetud sauna punktid: {str(len(punktid_ajad_dict.keys()))}"
-                    f"\n\tVõetud boonuse punktid: {str(len(self.boonused.keys()))}"
                     f"\n\tKõik punktid: {data[8]}"
                     f"\n\tAlguse aeg: {data[9]}"
                     f"\n\tLõppaeg: {data[-1]}"
                     f"\n\tKogu aeg: {data[6]}"
-                    f"\n\tKäimata sauna trahv: {käimata_saun_fine_str}"
-                    f"\n\tSauna aja trahv: {sauna_time_fine_total_str}"
-                    f"\n\tKogu trahv: {kogu_trahv_str}"
-                    f"\n\tAeg trahviga: {kogu_aeg_pluss_trahv.strftime("%H:%M:%S")}"
-                    f"\n\tBoonuste aeg: {boonuste_aeg_str}"
-                    f"\n\tLõppaeg: {lõpp_tulemus.strftime("%H:%M:%S")}"
-                    f"\n\tBoonused : \n\n\t\t{'\n\t\t'.join(self.boonused)}\n"
+                    f"\n\tSauna ajad: {total_time_str}"
+                    f"\n\tKulunud aeg miinus sauna ajad: {kulunud_aeg_miinus_sauna_ajad}"
                     f"\n\tSauna ajad: \n{''.join(time_difference_output)}\n"
+                    f"\n\tKäimata saunade kogus: {len(points_not_done)}"
                     f"\n\tKäimata saunad: \n{''.join(points_not_done if points_not_done else "\n\t\t-")}\n\n\n"
                 )
 
@@ -241,7 +288,7 @@ class SaunaMarathon:
     def individual_team(self):
         try:
             index = self.combobox.get().split(".")[0]
-            data = self.data_list[int(index)-1]
+            data = self.data_list[int(index) - 1]
             team_data = tk.Tk()
             team_data.geometry("700x550")
             team_data.title(f"{data["Tiimi nimi"]}")
@@ -252,11 +299,9 @@ class SaunaMarathon:
             scrollbar = tk.Scrollbar(team_data, command=text_box.yview)
             scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
             text_box.config(yscrollcommand=scrollbar.set)
-            tehtud_punktid = [f"\n\t{key}: {value}" for key,
-                              value in data["Sauna punktid"][0].items()]
+            tehtud_punktid = [f"\n\t{key}: {value}" for key, value in data["Sauna punktid"][0].items()]
             tegemata_punktid = [punkt for punkt in data["Tegemata punktid"]]
-            data_to_insert = (
-                f"Rinnanumber: {data['Rinnanumber']} \
+            data_to_insert = f"Rinnanumber: {data['Rinnanumber']} \
                     \nSI-Pulga nr: {data['SI-Pulga nr']} \
                     \nEesnimi: {data['Eesnimi']} \
                     \nPerenimi: {data['Perenimi']} \
@@ -265,11 +310,13 @@ class SaunaMarathon:
                     \nStardiaeg: {data['Stardiaeg']} \
                     \nLõpuaeg: {data['Lõpuaeg']} \
                     \nKogu aeg: {data['Kogu aeg']}\
+                    \nSauna ajad: {data["Sauna ajad kokku"]}\
+                    \nKulunud aeg miinus sauna ajad: {data["Kulunud aeg miinus sauna ajad"]}\
                     \nVõetud punktid: {data['Võetud punktid']} \
                     \nTehtud punktid: \n{''.join(tehtud_punktid)}\n \
-                    \nTegemata punktid: \n{''.join(tegemata_punktid)}\n \
-                    \nBoonused: \n\n\t{"\n\t".join(data["Boonused"][0].keys())}\n\n\n"
-            )
+                    \nTegemata punktide kogus: {data["Tegemata punktide kogus"]}\
+                    \nTegemata punktid: \n{''.join(tegemata_punktid)}\n"
+
             text_box.insert(tk.END, data_to_insert)
             team_data.mainloop()
         except ValueError:
@@ -290,10 +337,21 @@ class SaunaMarathon:
         table_root.title("Data table")
         table_root.geometry("1275x500")
         table = ttk.Treeview(
-            table_root, height=100,
-            columns=("ID", "Tiim", "Nimi", "Alguse aeg", "Lõpu aeg", "Kulunud aeg", "Trahv", "111-112", "151-152",
-                     "Boonus", "Lõppaeg"),
-            show="headings")
+            table_root,
+            height=100,
+            columns=(
+                "ID",
+                "Tiim",
+                "Nimi",
+                "Alguse aeg",
+                "Lõpu aeg",
+                "Kulunud aeg",
+                "Kogu sauna aeg",
+                "Lõppaeg",
+                "Tegemata saunad",
+            ),
+            show="headings",
+        )
 
         table.heading("ID", text="Koht")
         table.heading("Tiim", text="Tiim")
@@ -301,42 +359,39 @@ class SaunaMarathon:
         table.heading("Alguse aeg", text="Alguse aeg")
         table.heading("Lõpu aeg", text="Lõpu aeg")
         table.heading("Kulunud aeg", text="Kulunud aeg")
-        table.heading("Trahv", text="Trahv")
-        table.heading("111-112", text="111-112")
-        table.heading("151-152", text="151-152")
-        table.heading("Boonus", text="Boonus")
+        table.heading("Kogu sauna aeg", text="Kogu sauna aeg")
         table.heading("Lõppaeg", text="Lõppaeg")
+        table.heading("Tegemata saunad", text="Tegemata saunad")
         table.column("ID", width=50)
         table.column("Alguse aeg", width=100, anchor="center")
         table.column("Lõpu aeg", width=100, anchor="center")
         table.column("Kulunud aeg", width=100, anchor="center")
-        table.column("Trahv", width=100, anchor="center")
-        table.column("151-152", width=100, anchor="center")
-        table.column("111-112", width=100, anchor="center")
-        table.column("Boonus", width=100, anchor="center")
+        table.column("Kogu sauna aeg", width=100, anchor="center")
         table.column("Lõppaeg", width=100, anchor="center")
+        table.column("Tegemata saunad", width=100, anchor="center")
         table.pack(pady=5, padx=5, side=tk.LEFT, fill="both", expand="yes")
         scrollbar = tk.Scrollbar(table_root, command=table.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y, pady=5)
         table.config(yscrollcommand=scrollbar.set)
         table.bind("<Control-Key-c>", lambda x: copy_from_table(table, x))
         if self.data_list:
-            sorted_data_list = sorted(self.data_list, key=lambda x: x["Lõppaeg"])
+            sorted_data_list = sorted(self.data_list, key=lambda x: x["Kulunud aeg miinus sauna ajad"])
             for index, line in enumerate(sorted_data_list):
-                if line["Salasaun"]:
-                    saun_111_112 = [saun for saun in line["Salasaun"] if saun.startswith("111")]
-                    saun_151_152 = [saun for saun in line["Salasaun"] if saun.startswith("151")]
-                table.insert("", "end", values=(f"{index+1}.",
-                                                line["Tiimi nimi"],
-                                                f"{line["Eesnimi"]} {line["Perenimi"]}",
-                                                line["Stardiaeg"],
-                                                line["Lõpuaeg"],
-                                                line["Kogu aeg"],
-                                                line["Kogu trahv"],
-                                                saun_111_112[0].split(":", 1)[1] if saun_111_112 else "-",
-                                                saun_151_152[0].split(":", 1)[1] if saun_151_152 else "-",
-                                                line["Boonuste aeg"],
-                                                line["Lõppaeg"]))
+                table.insert(
+                    "",
+                    "end",
+                    values=(
+                        f"{index+1}.",
+                        line["Tiimi nimi"],
+                        f"{line["Eesnimi"]} {line["Perenimi"]}",
+                        line["Stardiaeg"],
+                        line["Lõpuaeg"],
+                        line["Kogu aeg"],
+                        line["Sauna ajad kokku"],
+                        line["Kulunud aeg miinus sauna ajad"],
+                        line["Tegemata punktide kogus"],
+                    ),
+                )
 
         else:
             table_root.destroy()
