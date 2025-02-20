@@ -3,7 +3,7 @@ import sys
 import os
 
 # Pyside imports
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QTreeWidgetItem
 from PySide6.QtGui import QIcon
 
 # My imports
@@ -51,12 +51,25 @@ class SaunaMaraton(Ui_MainWindow):
     def insert_team_names_to_combobox(self):
         self.team_list.addItems(self.team_names)
 
+    def insert_team_data_to_treeview(self):
+        max_columns = max(len(team.split(";")) for team in self.teams)
+        self.result_list.setColumnCount(max_columns)
+        self.result_list.setHeaderLabels([f"Col {i + 1}" for i in range(max_columns)])
+        for team in self.teams:
+            columns = team.split(";")
+            item = QTreeWidgetItem(columns)
+            self.result_list.addTopLevelItem(item)
+        self.result_list.setSortingEnabled(True)
+        for col in range(max_columns):
+            self.result_list.resizeColumnToContents(col)
+
     def run_file(self):
         if self.path:
             try:
                 self.read_file(self.path)
                 self.get_team_names(self.teams)
                 self.insert_team_names_to_combobox()
+                self.insert_team_data_to_treeview()
 
             except Exception as e:
                 QMessageBox.warning(self.window, "Error", str(e))

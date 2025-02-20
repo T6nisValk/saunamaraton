@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainQBtZgL.ui'
+## Form generated from reading UI file 'mainnCOOOJ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.2
 ##
@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QLabel,
-    QListView, QMainWindow, QPushButton, QSizePolicy,
-    QStatusBar, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHeaderView,
+    QLabel, QMainWindow, QPushButton, QSizePolicy,
+    QStatusBar, QTreeWidget, QTreeWidgetItem, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -53,11 +53,6 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.path_lbl, 0, 0, 1, 1)
 
-        self.result_list = QListView(self.centralwidget)
-        self.result_list.setObjectName(u"result_list")
-
-        self.gridLayout.addWidget(self.result_list, 1, 0, 1, 5)
-
         self.team_list = QComboBox(self.centralwidget)
         self.team_list.setObjectName(u"team_list")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
@@ -74,6 +69,11 @@ class Ui_MainWindow(object):
         self.browse_btn.setSizePolicy(sizePolicy)
 
         self.gridLayout.addWidget(self.browse_btn, 0, 1, 1, 1)
+
+        self.result_list = QTreeWidget(self.centralwidget)
+        self.result_list.setObjectName(u"result_list")
+
+        self.gridLayout.addWidget(self.result_list, 1, 0, 1, 5)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QStatusBar(MainWindow)
