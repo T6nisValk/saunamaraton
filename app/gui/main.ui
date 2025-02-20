@@ -21,13 +21,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0" colspan="5">
-     <widget class="QTreeWidget" name="result_list">
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
-     </widget>
+     <widget class="QTreeWidget" name="result_list"/>
     </item>
     <item row="0" column="0">
      <widget class="QPushButton" name="browse_btn">

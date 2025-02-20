@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'maincfzjxT.ui'
+## Form generated from reading UI file 'mainlfZOGz.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.2
 ##
@@ -32,9 +32,6 @@ class Ui_MainWindow(object):
         self.gridLayout = QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(u"gridLayout")
         self.result_list = QTreeWidget(self.centralwidget)
-        __qtreewidgetitem = QTreeWidgetItem()
-        __qtreewidgetitem.setText(0, u"1");
-        self.result_list.setHeaderItem(__qtreewidgetitem)
         self.result_list.setObjectName(u"result_list")
 
         self.gridLayout.addWidget(self.result_list, 1, 0, 1, 5)
