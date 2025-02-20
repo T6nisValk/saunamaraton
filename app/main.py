@@ -24,6 +24,7 @@ class SaunaMaraton(Ui_MainWindow):
         self.path = None
         self.window.setWindowIcon(QIcon(resourcePath("app/assets/icons/sauna.ico")))
         self.result_list.setItemDelegate(CustomDelegate())
+        self.team_data_btn.setDisabled(True)
 
         self.team_names = []
         self.teams = []
