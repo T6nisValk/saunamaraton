@@ -108,7 +108,10 @@ class SaunaMaraton(Ui_MainWindow):
 
                 # Apply 15s penalty if time is under 2:55
                 if duration < penalty_threshold:
-                    penalty_time += timedelta(seconds=15)
+                    penalty_time += timedelta(minutes=15)
+            else:
+                penalty_time += timedelta(minutes=15)
+                sauna_results[f"{sauna_in}-{sauna_out}"] = "N/A"
 
         # Find the row for this team
         for i in range(self.result_list.topLevelItemCount()):
@@ -121,8 +124,13 @@ class SaunaMaraton(Ui_MainWindow):
                     item.setText(col_index, duration_str)
 
                     # Set text color to red if under 2:55
-                    if duration < penalty_threshold:
+                    if duration == "N/A":
                         item.setForeground(col_index, QColor("red"))
+                    else:
+                        if duration < penalty_threshold:
+                            item.setForeground(col_index, QColor("red"))
+                        else:
+                            item.setForeground(col_index, QColor("green"))
 
                 # Update "Mõõdetud raja aeg" with penalty
                 measured_time = item.text(5)  # "Mõõdetud raja aeg" column
@@ -172,9 +180,7 @@ class SaunaMaraton(Ui_MainWindow):
 
     def browse_file(self):
         self.path_lbl.clear()
-        self.path, _ = QFileDialog.getOpenFileName(
-            self.window, "Open File", "", "Text Files (*.txt);;All Files(*)"
-        )
+        self.path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
         self.path_lbl.setText(os.path.basename(self.path))
 
 

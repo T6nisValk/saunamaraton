@@ -20,8 +20,18 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" colspan="5">
-     <widget class="QTreeWidget" name="result_list"/>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="run_btn">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Run File</string>
+      </property>
+     </widget>
     </item>
     <item row="0" column="0">
      <widget class="QPushButton" name="browse_btn">
@@ -36,17 +46,13 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="run_btn">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Run File</string>
-      </property>
+    <item row="2" column="0" colspan="5">
+     <widget class="QTreeWidget" name="result_list">
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
      </widget>
     </item>
     <item row="0" column="2">
@@ -66,6 +72,42 @@
      <widget class="QLabel" name="path_lbl">
       <property name="text">
        <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="penalty_lbl">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+color:red;
+}</string>
+      </property>
+      <property name="text">
+       <string>Penalty</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="normal_lbl">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+color:green;
+}</string>
+      </property>
+      <property name="text">
+       <string>Normal time</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_3">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+color:blue;
+}</string>
+      </property>
+      <property name="text">
+       <string>Bonus</string>
       </property>
      </widget>
     </item>
