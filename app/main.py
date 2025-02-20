@@ -6,11 +6,13 @@ from datetime import datetime, timedelta
 # Pyside imports
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QTreeWidgetItem
 from PySide6.QtGui import QIcon, QColor
+from PySide6.QtCore import Qt
 
 # My imports
 from helpers import resourcePath
 from gui.ui_main import Ui_MainWindow
 from assets.saunas import sauna_pairs
+from gui.border import CustomDelegate
 
 
 class SaunaMaraton(Ui_MainWindow):
@@ -21,6 +23,7 @@ class SaunaMaraton(Ui_MainWindow):
         self.setupUi(self.window)
         self.path = None
         self.window.setWindowIcon(QIcon(resourcePath("app/assets/icons/sauna.ico")))
+        self.result_list.setItemDelegate(CustomDelegate())
 
         self.team_names = []
         self.teams = []
@@ -193,17 +196,16 @@ class SaunaMaraton(Ui_MainWindow):
             # Sort times and calculate difference then add to tree
             self.insert_sauna_times_to_tree(team_name)
 
-        # Resize columns & sort
-        self.result_list.setSortingEnabled(True)
-        for col in range(column_count):
-            self.result_list.resizeColumnToContents(col)
-
     def run_file(self):
         if self.path:
             try:
                 self.read_file(self.path)
                 self.insert_team_data_to_treeview()
-
+                # Resize and sort by end time
+                for col in range(self.result_list.columnCount()):
+                    self.result_list.resizeColumnToContents(col)
+                self.result_list.setSortingEnabled(True)
+                self.result_list.sortByColumn(9, Qt.AscendingOrder)
             except Exception as e:
                 QMessageBox.warning(self.window, "Error", str(e))
         else:
