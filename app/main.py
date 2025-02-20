@@ -51,7 +51,7 @@ class SaunaMaraton(Ui_MainWindow):
         self.team_sauna_data[team_name] = sauna_times
 
     def insert_team_data_to_treeview(self):
-        column_count = 10
+        column_count = 9
         self.result_list.setColumnCount(column_count)
         self.result_list.setHeaderLabels(
             [
@@ -60,7 +60,6 @@ class SaunaMaraton(Ui_MainWindow):
                 "Eesnimi",
                 "Perenimi",
                 "Tiimi nimi",
-                "Klass",
                 "Raja aeg",
                 "Punktid",
                 "Stardi aeg",
@@ -71,6 +70,7 @@ class SaunaMaraton(Ui_MainWindow):
             team_info = team.split(";")[:10]  # Remove sauna times
             final_time = team.split(";")[:-1][-1]  # Get final time
             del team_info[7]  # Remove C column
+            del team_info[5]  # Remove VALIK
             team_info.append(final_time)  # Add final time to team info
             item = QTreeWidgetItem(team_info)
             self.result_list.addTopLevelItem(item)
