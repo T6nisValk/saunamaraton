@@ -31,9 +31,7 @@ class SaunaMaraton(Ui_MainWindow):
 
     def browse_file(self):
         self.path_lbl.clear()
-
         self.path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
-
         self.path_lbl.setText(os.path.basename(self.path))
 
 
