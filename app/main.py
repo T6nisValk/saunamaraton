@@ -84,10 +84,14 @@ class SaunaMaraton(Ui_MainWindow):
             return
 
         sauna_times = self.team_sauna_data[team_name]
-        sauna_results = {}  # Store sauna times
+        sauna_results = {}  # Store known sauna times
+        extra_saunas = {}  # Store unknown saunas with their times
         penalty_time = timedelta(seconds=0)  # Track penalty time
         penalty_threshold = timedelta(minutes=2, seconds=55)
+        bonus_time_reduction = timedelta(minutes=10)  # Each bonus reduces penalty by 10 minutes
+        used_bonuses = 0  # Counter for bonuses used
 
+        # Process known saunas
         for sauna_in, sauna_out in sauna_pairs:
             first_in_time = None
             last_out_time = None
@@ -106,33 +110,60 @@ class SaunaMaraton(Ui_MainWindow):
             if duration:
                 sauna_results[f"{sauna_in}-{sauna_out}"] = duration
 
-                # Apply 15s penalty if time is under 2:55
+                # Apply 15-minute penalty if time is under 2:55
                 if duration < penalty_threshold:
                     penalty_time += timedelta(minutes=15)
             else:
                 penalty_time += timedelta(minutes=15)
                 sauna_results[f"{sauna_in}-{sauna_out}"] = "N/A"
 
+        # Detect extra saunas (bonuses or unknown saunas)
+        for i in range(0, len(sauna_times), 2):
+            sauna_id = sauna_times[i]
+            time_value = sauna_times[i + 1]
+
+            # If it's not part of sauna_pairs, store it as an extra sauna
+            if sauna_id not in [s for pair in sauna_pairs for s in pair]:
+                if sauna_id not in extra_saunas:
+                    extra_saunas[sauna_id] = time_value  # Store only the first occurrence
+                    used_bonuses += 1  # Count each unique extra sauna as a bonus
+
+        # Calculate final penalty time after applying bonuses
+        penalty_time -= used_bonuses * bonus_time_reduction
+        if penalty_time.total_seconds() < 0:
+            penalty_time = timedelta(seconds=0)  # Prevent negative penalties
+
+        # Update headers dynamically for extra saunas
+        headers = self.get_headers()
+        for extra_sauna in sorted(extra_saunas):  # Sort for consistency
+            if extra_sauna not in headers:
+                headers.append(extra_sauna)  # Add to headers
+
+        # Update the tree widget with new headers
+        self.result_list.setHeaderLabels(headers)
+
         # Find the row for this team
         for i in range(self.result_list.topLevelItemCount()):
             item = self.result_list.topLevelItem(i)
             if item.text(4) == team_name:  # Column 4 is team name
-                headers = self.get_headers()
                 for sauna_pair, duration in sauna_results.items():
                     col_index = headers.index(sauna_pair)
                     duration_str = str(duration)
                     item.setText(col_index, duration_str)
 
-                    # Set text color to red if under 2:55
+                    # Set text color based on duration
                     if duration == "N/A":
                         item.setForeground(col_index, QColor("red"))
                     else:
-                        if duration < penalty_threshold:
-                            item.setForeground(col_index, QColor("red"))
-                        else:
-                            item.setForeground(col_index, QColor("green"))
+                        item.setForeground(col_index, QColor("red" if duration < penalty_threshold else "green"))
 
-                # Update "Mõõdetud raja aeg" with penalty
+                # Insert extra saunas with actual recorded time
+                for extra_sauna, time_value in extra_saunas.items():
+                    col_index = headers.index(extra_sauna)
+                    item.setText(col_index, time_value)  # Show actual recorded time
+                    item.setForeground(col_index, QColor("blue"))  # Differentiate extra saunas
+                    penalty_time -= timedelta(minutes=10)
+                # Update "Mõõdetud raja aeg" with penalty applied
                 measured_time = item.text(5)  # "Mõõdetud raja aeg" column
                 if measured_time:
                     original_time = datetime.strptime(measured_time, "%H:%M:%S")
