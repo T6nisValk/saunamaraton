@@ -22,6 +22,7 @@ class SaunaMaraton(Ui_MainWindow):
 
         self.team_names = []
         self.teams = []
+        self.team_sauna_data = {}
 
         # Signals
         self.browse_btn.clicked.connect(self.browse_file)
@@ -29,12 +30,12 @@ class SaunaMaraton(Ui_MainWindow):
         self.team_data_btn.clicked.connect(self.show_team_data)
 
     def show_team_data(self):
-        current_selection = self.team_list.currentText()
+        current_selection = self.result_list.currentItem()
         if current_selection:
-            for team in self.teams:
-                if current_selection in team:
-                    print(team)
-                    break
+            team_name = current_selection.text(4)
+            print(team_name, self.team_sauna_data[team_name])
+            sys.stdout.flush()
+
         else:
             QMessageBox.warning(self.window, "Error", "No team selected")
 
@@ -43,32 +44,48 @@ class SaunaMaraton(Ui_MainWindow):
             for line in f.readlines():
                 self.teams.append(line)
 
-    def get_team_names(self, data):
-        for team in data:
-            team_name = team.split(";")[4]
-            self.team_names.append(team_name)
-
-    def insert_team_names_to_combobox(self):
-        self.team_list.addItems(self.team_names)
+    def save_sauna_times(self, team_name, team):
+        sauna_times = team.split(";")[10:-1]  # Get only sauna times
+        sauna_times = sauna_times[:-1]  # Remove final time
+        sauna_times = [item for item in sauna_times if item != "?"]  # Remove ?
+        self.team_sauna_data[team_name] = sauna_times
 
     def insert_team_data_to_treeview(self):
-        max_columns = max(len(team.split(";")) for team in self.teams)
-        self.result_list.setColumnCount(max_columns)
-        self.result_list.setHeaderLabels([f"Col {i + 1}" for i in range(max_columns)])
+        column_count = 10
+        self.result_list.setColumnCount(column_count)
+        self.result_list.setHeaderLabels(
+            [
+                "Rinnanumber",
+                "SI-Number",
+                "Eesnimi",
+                "Perenimi",
+                "Tiimi nimi",
+                "Klass",
+                "Raja aeg",
+                "Punktid",
+                "Stardi aeg",
+                "Lõpu aeg",
+            ]
+        )
         for team in self.teams:
-            columns = team.split(";")
-            item = QTreeWidgetItem(columns)
+            team_info = team.split(";")[:10]  # Remove sauna times
+            final_time = team.split(";")[:-1][-1]  # Get final time
+            del team_info[7]  # Remove C column
+            team_info.append(final_time)  # Add final time to team info
+            item = QTreeWidgetItem(team_info)
             self.result_list.addTopLevelItem(item)
+            team_name = team_info[4]
+            self.save_sauna_times(team_name, team)
+
+        # Resize columns & sort
         self.result_list.setSortingEnabled(True)
-        for col in range(max_columns):
+        for col in range(column_count):
             self.result_list.resizeColumnToContents(col)
 
     def run_file(self):
         if self.path:
             try:
                 self.read_file(self.path)
-                self.get_team_names(self.teams)
-                self.insert_team_names_to_combobox()
                 self.insert_team_data_to_treeview()
 
             except Exception as e:
