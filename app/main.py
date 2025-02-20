@@ -20,21 +20,54 @@ class SaunaMaraton(Ui_MainWindow):
         self.path = None
         self.window.setWindowIcon(QIcon(resourcePath("app/assets/icons/sauna.ico")))
 
+        self.team_names = []
+        self.teams = []
+
         # Signals
         self.browse_btn.clicked.connect(self.browse_file)
         self.run_btn.clicked.connect(self.run_file)
+        self.team_data_btn.clicked.connect(self.show_team_data)
+
+    def show_team_data(self):
+        current_selection = self.team_list.currentText()
+        if current_selection:
+            for team in self.teams:
+                if current_selection in team:
+                    print(team)
+                    break
+        else:
+            QMessageBox.warning(self.window, "Error", "No team selected")
+
+    def read_file(self, path):
+        with open(path, "r", encoding="utf-8") as f:
+            for line in f.readlines():
+                self.teams.append(line)
+
+    def get_team_names(self, data):
+        for team in data:
+            team_name = team.split(";")[4]
+            self.team_names.append(team_name)
+
+    def insert_team_names_to_combobox(self):
+        self.team_list.addItems(self.team_names)
 
     def run_file(self):
         if self.path:
-            with open(self.path, "r") as f:
-                for line in f.readlines():
-                    print(line)
+            try:
+                self.read_file(self.path)
+                self.get_team_names(self.teams)
+                self.insert_team_names_to_combobox()
+
+            except Exception as e:
+                QMessageBox.warning(self.window, "Error", str(e))
         else:
             QMessageBox.warning(self.window, "Error", "File not found")
 
     def browse_file(self):
         self.path_lbl.clear()
-        self.path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
+        self.path, _ = QFileDialog.getOpenFileName(
+            self.window, "Open File", "", "Text Files (*.txt);;All Files(*)"
+        )
         self.path_lbl.setText(os.path.basename(self.path))
 
 
