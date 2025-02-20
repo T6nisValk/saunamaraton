@@ -4,8 +4,10 @@ import os
 
 # Pyside imports
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide6.QtGui import QIcon
 
 # My imports
+from helpers import resourcePath
 from gui.ui_main import Ui_MainWindow
 
 
@@ -16,6 +18,7 @@ class SaunaMaraton(Ui_MainWindow):
         self.window = window
         self.setupUi(self.window)
         self.path = None
+        self.window.setWindowIcon(QIcon(resourcePath("app/assets/icons/sauna.ico")))
 
         # Signals
         self.browse_btn.clicked.connect(self.browse_file)
