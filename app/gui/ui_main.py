@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainFncFdE.ui'
+## Form generated from reading UI file 'mainHmQYnw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.2
 ##
@@ -87,7 +87,7 @@ class Ui_MainWindow(object):
         self.label_3 = QLabel(self.centralwidget)
         self.label_3.setObjectName(u"label_3")
         self.label_3.setStyleSheet(u"QLabel{\n"
-"color:blue;\n"
+"color:yellow;\n"
 "}")
 
         self.gridLayout.addWidget(self.label_3, 1, 2, 1, 1)

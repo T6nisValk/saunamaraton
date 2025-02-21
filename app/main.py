@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QTreeWidgetItem
 from PySide6.QtGui import QIcon, QColor
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTime
 
 from helpers import resourcePath
 from gui.ui_main import Ui_MainWindow
@@ -42,7 +42,7 @@ class SaunaMaraton(Ui_MainWindow):
             QMessageBox.warning(self.window, "Error", "No team selected")
 
     def read_file(self, path):
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, "r") as f:
             for line in f.readlines():
                 self.teams.append(line)
 
@@ -141,7 +141,7 @@ class SaunaMaraton(Ui_MainWindow):
                     bonus_column = f"{sauna_id}"
                     col_index = headers.index(bonus_column)
                     item.setText(col_index, time)
-                    item.setForeground(col_index, QColor("blue"))
+                    item.setForeground(col_index, QColor("yellow"))
 
     def insert_team_data_to_treeview(self):
         column_count = 9
@@ -178,17 +178,25 @@ class SaunaMaraton(Ui_MainWindow):
         for i in range(self.result_list.topLevelItemCount()):
             item = self.result_list.topLevelItem(i)
             penalty_time = timedelta(seconds=0)
+
             for col in range(10, self.result_list.columnCount()):
                 if item.foreground(col) == QColor("red"):
                     penalty_time += timedelta(minutes=15)
-                elif item.foreground(col) == QColor("blue"):
+                elif item.foreground(col) == QColor("yellow"):
                     penalty_time -= timedelta(minutes=10)
+
             initial_time = item.text(5)
             initial_time = datetime.strptime(initial_time, "%H:%M:%S") - datetime(1900, 1, 1)
-
             end_time = initial_time + penalty_time
 
-            item.setText(9, str(end_time))
+            # Convert timedelta to QTime
+            end_qtime = QTime(
+                end_time.seconds // 3600, (end_time.seconds % 3600) // 60, end_time.seconds % 60
+            )
+
+            # Store both text and QTime for proper sorting
+            item.setText(9, end_qtime.toString("HH:mm:ss"))
+            item.setData(9, Qt.UserRole, end_qtime)  # Store QTime for sorting
 
     def run_file(self):
         if self.path:
@@ -207,7 +215,9 @@ class SaunaMaraton(Ui_MainWindow):
 
     def browse_file(self):
         self.path_lbl.clear()
-        self.path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
+        self.path, _ = QFileDialog.getOpenFileName(
+            self.window, "Open File", "", "Text Files (*.txt);;All Files(*)"
+        )
         self.path_lbl.setText(os.path.basename(self.path))
 
 

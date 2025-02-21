@@ -103,7 +103,7 @@ color:green;
      <widget class="QLabel" name="label_3">
       <property name="styleSheet">
        <string notr="true">QLabel{
-color:blue;
+color:yellow;
 }</string>
       </property>
       <property name="text">
