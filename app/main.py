@@ -190,9 +190,7 @@ class SaunaMaraton(Ui_MainWindow):
             end_time = initial_time + penalty_time
 
             # Convert timedelta to QTime
-            end_qtime = QTime(
-                end_time.seconds // 3600, (end_time.seconds % 3600) // 60, end_time.seconds % 60
-            )
+            end_qtime = QTime(end_time.seconds // 3600, (end_time.seconds % 3600) // 60, end_time.seconds % 60)
 
             # Store both text and QTime for proper sorting
             item.setText(9, end_qtime.toString("HH:mm:ss"))
@@ -201,6 +199,7 @@ class SaunaMaraton(Ui_MainWindow):
     def run_file(self):
         if self.path:
             try:
+                self.result_list.clear()
                 self.read_file(self.path)
                 self.insert_team_data_to_treeview()
                 self.apply_bonuses_penalties()
@@ -215,9 +214,7 @@ class SaunaMaraton(Ui_MainWindow):
 
     def browse_file(self):
         self.path_lbl.clear()
-        self.path, _ = QFileDialog.getOpenFileName(
-            self.window, "Open File", "", "Text Files (*.txt);;All Files(*)"
-        )
+        self.path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
         self.path_lbl.setText(os.path.basename(self.path))
 
 
