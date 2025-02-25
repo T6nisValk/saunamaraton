@@ -178,7 +178,7 @@ class SaunaMaraton(Ui_MainWindow):
                     else:
                         item.setForeground(col_index, QColor("green"))
                         duration_str = str(duration)
-                        item.setText(col_index, f"FILO: {duration_str}")
+                        item.setText(col_index, duration_str)
 
                 for sauna_id, time in bonus_saunas.items():
                     bonus_column = f"{sauna_id}"
