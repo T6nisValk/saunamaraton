@@ -239,10 +239,16 @@ class SaunaMaraton(Ui_MainWindow):
             item.setText(9, end_qtime.toString("HH:mm:ss"))
             item.setData(9, Qt.UserRole, end_qtime)  # Store QTime for sorting
 
+    def clear_data(self):
+        self.result_list.clear()
+        self.team_names = []
+        self.teams = []
+        self.team_sauna_data = {}
+
     def run_file(self):
         if self.path:
             try:
-                self.result_list.clear()
+                self.clear_data()
                 self.read_file(self.path)
                 self.insert_team_data_to_treeview()
                 self.apply_bonuses_penalties()
