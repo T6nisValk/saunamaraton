@@ -21,7 +21,6 @@ class SaunaMaraton(Ui_MainWindow):
         self.path = None
         self.window.setWindowIcon(QIcon(resourcePath("app/assets/icons/sauna.ico")))
         self.result_list.setItemDelegate(CustomDelegate())
-        self.team_data_btn.setDisabled(True)
 
         self.team_names = []
         self.teams = []
@@ -35,8 +34,8 @@ class SaunaMaraton(Ui_MainWindow):
         current_selection = self.result_list.currentItem()
         if current_selection:
             team_name = current_selection.text(4)
-            print(team_name, self.team_sauna_data[team_name])
-            sys.stdout.flush()
+            team_sauna_data = self.team_sauna_data[team_name]
+            self.info_lbl.setText(f"{team_name}\n{team_sauna_data}")
 
         else:
             QMessageBox.warning(self.window, "Error", "No team selected")
@@ -137,7 +136,7 @@ class SaunaMaraton(Ui_MainWindow):
                         in_time = str(duration[1])
                         out_time = str(duration[2])
                         duration_str = str(duration[0])
-                        item.setText(col_index, f"{in_time} - {out_time}\n{duration_str}")
+                        item.setText(col_index, f"FILO: {in_time} - {out_time}\n{duration_str}")
 
                 for sauna_id, time in bonus_saunas.items():
                     bonus_column = f"{sauna_id}"
