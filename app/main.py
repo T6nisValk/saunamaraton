@@ -29,6 +29,50 @@ class SaunaMaraton(Ui_MainWindow):
         self.browse_btn.clicked.connect(self.browse_file)
         self.run_btn.clicked.connect(self.run_file)
         self.team_data_btn.clicked.connect(self.show_team_data)
+        self.export_btn.clicked.connect(self.export_to_text)
+
+    def export_to_text(self):
+        if self.result_list.topLevelItemCount() == 0:
+            QMessageBox.warning(self.window, "Export Error", "No data to export.")
+            return
+
+        destination_dir = QFileDialog.getExistingDirectory(self.window, "Save to")
+        if not destination_dir:
+            return
+
+        export_path = os.path.join(destination_dir, "result_list.txt")
+
+        # Check if file exists and prompt for overwrite
+        if os.path.exists(export_path):
+            reply = QMessageBox.question(
+                self.window,
+                "File Exists",
+                "The file 'result_list.txt' already exists.\nDo you want to overwrite it?",
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if reply == QMessageBox.No:
+                return
+
+        result_list = []
+
+        # Extract headers
+        column_count = self.result_list.columnCount()
+        headers = [self.result_list.headerItem().text(col) for col in range(column_count)]
+        result_list.append("\t".join(headers))
+
+        # Extract data rows
+        for i in range(self.result_list.topLevelItemCount()):
+            item = self.result_list.topLevelItem(i)
+            item_data = [item.text(col) for col in range(column_count)]
+            result_list.append("\t".join(item_data))
+
+        # Write to file
+        with open(export_path, "w", encoding="utf-8") as f:
+            for line in result_list:
+                f.write(line + "\n")
+
+        QMessageBox.information(self.window, "Export Successful", f"Data saved to:\n{export_path}")
 
     def show_team_data(self):
         current_selection = self.result_list.currentItem()
@@ -106,7 +150,7 @@ class SaunaMaraton(Ui_MainWindow):
             if duration is None:
                 sauna_results[f"{sauna_in}-{sauna_out}"] = "N/A"
             else:
-                sauna_results[f"{sauna_in}-{sauna_out}"] = [duration, first_in_time, last_out_time]
+                sauna_results[f"{sauna_in}-{sauna_out}"] = duration
 
         for i in range(0, len(sauna_times), 2):
             sauna_id = sauna_times[i]
@@ -133,10 +177,8 @@ class SaunaMaraton(Ui_MainWindow):
                         item.setText(col_index, "N/A")
                     else:
                         item.setForeground(col_index, QColor("green"))
-                        in_time = str(duration[1])
-                        out_time = str(duration[2])
-                        duration_str = str(duration[0])
-                        item.setText(col_index, f"FILO: {in_time} - {out_time}\n{duration_str}")
+                        duration_str = str(duration)
+                        item.setText(col_index, f"FILO: {duration_str}")
 
                 for sauna_id, time in bonus_saunas.items():
                     bonus_column = f"{sauna_id}"
