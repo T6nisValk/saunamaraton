@@ -107,7 +107,7 @@ class SaunaMaraton(Ui_MainWindow):
             if duration is None:
                 sauna_results[f"{sauna_in}-{sauna_out}"] = "N/A"
             else:
-                sauna_results[f"{sauna_in}-{sauna_out}"] = duration
+                sauna_results[f"{sauna_in}-{sauna_out}"] = [duration, first_in_time, last_out_time]
 
         for i in range(0, len(sauna_times), 2):
             sauna_id = sauna_times[i]
@@ -129,13 +129,15 @@ class SaunaMaraton(Ui_MainWindow):
             if item.text(4) == team_name:
                 for sauna_pair, duration in sauna_results.items():
                     col_index = headers.index(sauna_pair)
-                    duration_str = str(duration)
-                    item.setText(col_index, duration_str)
-
                     if duration == "N/A":
                         item.setForeground(col_index, QColor("red"))
+                        item.setText(col_index, "N/A")
                     else:
                         item.setForeground(col_index, QColor("green"))
+                        in_time = str(duration[1])
+                        out_time = str(duration[2])
+                        duration_str = str(duration[0])
+                        item.setText(col_index, f"{in_time} - {out_time}\n{duration_str}")
 
                 for sauna_id, time in bonus_saunas.items():
                     bonus_column = f"{sauna_id}"
