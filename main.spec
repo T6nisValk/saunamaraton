@@ -4,8 +4,7 @@ a = Analysis(
     ['app/main.py'],
     pathex=[],
     binaries=[],
-    datas=[('app/assets/icons/sauna.ico', 'app/assets/icons/'),
-            ("app/assets/saunas.py", "app/assets")],  # Include icon file
+    datas=[('app/assets/icons/sauna.ico', 'app/assets/icons/')],  # Include icon file
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
