@@ -20,6 +20,38 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="1">
+     <widget class="QLabel" name="normal_lbl">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+color:green;
+}</string>
+      </property>
+      <property name="text">
+       <string>Normal time</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QLabel" name="path_lbl">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QPushButton" name="browse_btn">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Browse</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0">
      <widget class="QLabel" name="penalty_lbl">
       <property name="styleSheet">
@@ -28,12 +60,21 @@ color:red;
 }</string>
       </property>
       <property name="text">
-       <string>Penalty</string>
+       <string>Penalty N/A</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="team_data_btn">
+    <item row="3" column="0" colspan="6">
+     <widget class="QTreeWidget" name="result_list">
+      <column>
+       <property name="text">
+        <string notr="true">1</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QPushButton" name="export_btn">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -41,7 +82,20 @@ color:red;
        </sizepolicy>
       </property>
       <property name="text">
-       <string>See Team Data</string>
+       <string>Export List</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QPushButton" name="run_btn">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Run File</string>
       </property>
      </widget>
     </item>
@@ -73,8 +127,8 @@ color:yellow;
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="browse_btn">
+    <item row="0" column="2">
+     <widget class="QPushButton" name="team_data_btn">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -82,61 +136,19 @@ color:yellow;
        </sizepolicy>
       </property>
       <property name="text">
-       <string>Browse</string>
+       <string>See Team Data</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="normal_lbl">
+    <item row="1" column="3">
+     <widget class="QLabel" name="label">
       <property name="styleSheet">
        <string notr="true">QLabel{
-color:green;
+color: orange;
 }</string>
       </property>
       <property name="text">
-       <string>Normal time</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="run_btn">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Run File</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0" colspan="6">
-     <widget class="QTreeWidget" name="result_list">
-      <column>
-       <property name="text">
-        <string notr="true">1</string>
-       </property>
-      </column>
-     </widget>
-    </item>
-    <item row="0" column="4">
-     <widget class="QLabel" name="path_lbl">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="export_btn">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Export List</string>
+       <string>Penalty &lt;Time</string>
       </property>
      </widget>
     </item>

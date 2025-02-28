@@ -131,6 +131,10 @@ class SaunaMaraton(Ui_MainWindow):
         sauna_results = {}
         unpaired_saunas = []
         bonus_saunas = {}
+        penalty_time = datetime.strptime("00:02:55", "%H:%M:%S")
+        penalty_time_delta = timedelta(
+            hours=penalty_time.hour, minutes=penalty_time.minute, seconds=penalty_time.second
+        )
 
         for sauna_in, sauna_out in sauna_pairs:
             first_in_time = None
@@ -176,8 +180,11 @@ class SaunaMaraton(Ui_MainWindow):
                         item.setForeground(col_index, QColor("red"))
                         item.setText(col_index, "N/A")
                     else:
-                        item.setForeground(col_index, QColor("green"))
                         duration_str = str(duration)
+                        if duration > penalty_time_delta:
+                            item.setForeground(col_index, QColor("green"))
+                        else:
+                            item.setForeground(col_index, QColor("orange"))
                         item.setText(col_index, duration_str)
 
                 for sauna_id, time in bonus_saunas.items():
@@ -227,6 +234,8 @@ class SaunaMaraton(Ui_MainWindow):
                     penalty_time += timedelta(minutes=15)
                 elif item.foreground(col) == QColor("yellow"):
                     penalty_time -= timedelta(minutes=10)
+                elif item.foreground(col) == QColor("orange"):
+                    penalty_time += timedelta(minutes=15)
 
             initial_time = item.text(5)
             initial_time = datetime.strptime(initial_time, "%H:%M:%S") - datetime(1900, 1, 1)
