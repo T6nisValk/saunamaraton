@@ -8,7 +8,6 @@ from PySide6.QtCore import Qt, QTime
 
 from helpers import resourcePath
 from gui.ui_main import Ui_MainWindow
-from assets.saunas import sauna_pairs
 from gui.border import CustomDelegate
 
 
@@ -21,7 +20,9 @@ class SaunaMaraton(Ui_MainWindow):
         self.path = None
         self.window.setWindowIcon(QIcon(resourcePath("app/assets/icons/sauna.ico")))
         self.result_list.setItemDelegate(CustomDelegate())
+        self.sauna_path = r"app\assets\saunas.txt"
 
+        self.sauna_pairs = []
         self.team_names = []
         self.teams = []
         self.team_sauna_data = {}
@@ -84,10 +85,14 @@ class SaunaMaraton(Ui_MainWindow):
         else:
             QMessageBox.warning(self.window, "Error", "No team selected")
 
-    def read_file(self, path):
-        with open(path, "r") as f:
+    def read_files(self, result_path, saunas_path):
+        with open(result_path, "r") as f:
             for line in f.readlines():
                 self.teams.append(line)
+        with open(resourcePath(saunas_path), "r") as f:
+            for line in f.readlines():
+                sauna_pair = tuple(line.strip().split(","))
+                self.sauna_pairs.append(sauna_pair)
 
     def save_sauna_times(self, team_name, team):
         sauna_times = team.split(";")[10:-1]
@@ -108,7 +113,7 @@ class SaunaMaraton(Ui_MainWindow):
             "Lõpu aeg",
             "Aeg+trahv-boonus",
         ]
-        for sauna in sauna_pairs:
+        for sauna in self.sauna_pairs:
             headers.append(f"{sauna[0]}-{sauna[1]}")
         return headers
 
@@ -136,7 +141,7 @@ class SaunaMaraton(Ui_MainWindow):
             hours=penalty_time.hour, minutes=penalty_time.minute, seconds=penalty_time.second
         )
 
-        for sauna_in, sauna_out in sauna_pairs:
+        for sauna_in, sauna_out in self.sauna_pairs:
             first_in_time = None
             last_out_time = None
 
@@ -158,7 +163,7 @@ class SaunaMaraton(Ui_MainWindow):
 
         for i in range(0, len(sauna_times), 2):
             sauna_id = sauna_times[i]
-            if sauna_id not in [s for pair in sauna_pairs for s in pair]:
+            if sauna_id not in [s for pair in self.sauna_pairs for s in pair]:
                 unpaired_saunas.append(sauna_id)
                 bonus_saunas[sauna_id] = sauna_times[i + 1]
 
@@ -217,7 +222,7 @@ class SaunaMaraton(Ui_MainWindow):
             sauna_times = self.team_sauna_data[team_name]
             for i in range(0, len(sauna_times), 2):
                 sauna_id = sauna_times[i]
-                if sauna_id not in [s for pair in sauna_pairs for s in pair]:
+                if sauna_id not in [s for pair in self.sauna_pairs for s in pair]:
                     if sauna_id not in bonus_saunas:
                         headers.append(f"Bonus {sauna_id}")
                         bonus_saunas.add(sauna_id)
@@ -253,12 +258,13 @@ class SaunaMaraton(Ui_MainWindow):
         self.team_names = []
         self.teams = []
         self.team_sauna_data = {}
+        self.sauna_pairs = []
 
     def run_file(self):
-        if self.path:
+        if self.result_path:
             try:
                 self.clear_data()
-                self.read_file(self.path)
+                self.read_files(self.result_path, self.sauna_path)
                 self.insert_team_data_to_treeview()
                 self.apply_bonuses_penalties()
                 for col in range(self.result_list.columnCount()):
@@ -272,8 +278,10 @@ class SaunaMaraton(Ui_MainWindow):
 
     def browse_file(self):
         self.path_lbl.clear()
-        self.path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
-        self.path_lbl.setText(os.path.basename(self.path))
+        self.result_path, _ = QFileDialog.getOpenFileName(
+            self.window, "Open File", "", "Text Files (*.txt);;All Files(*)"
+        )
+        self.path_lbl.setText(os.path.basename(self.result_path))
 
 
 if __name__ == "__main__":
