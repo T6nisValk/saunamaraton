@@ -286,6 +286,7 @@ class SaunaMaraton(Ui_MainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")  # Try "Windows", "Fusion", "Macintosh"
     window = QMainWindow()
     sauna_app = SaunaMaraton(window)
     window.show()
