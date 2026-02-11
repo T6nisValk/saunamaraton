@@ -137,9 +137,7 @@ class SaunaMaraton(Ui_MainWindow):
         unpaired_saunas = []
         bonus_saunas = {}
         penalty_time = datetime.strptime("00:02:55", "%H:%M:%S")
-        penalty_time_delta = timedelta(
-            hours=penalty_time.hour, minutes=penalty_time.minute, seconds=penalty_time.second
-        )
+        penalty_time_delta = timedelta(hours=penalty_time.hour, minutes=penalty_time.minute, seconds=penalty_time.second)
 
         for sauna_in, sauna_out in self.sauna_pairs:
             first_in_time = None
@@ -278,15 +276,13 @@ class SaunaMaraton(Ui_MainWindow):
 
     def browse_file(self):
         self.path_lbl.clear()
-        self.result_path, _ = QFileDialog.getOpenFileName(
-            self.window, "Open File", "", "Text Files (*.txt);;All Files(*)"
-        )
+        self.result_path, _ = QFileDialog.getOpenFileName(self.window, "Open File", "", "Text Files (*.txt);;All Files(*)")
         self.path_lbl.setText(os.path.basename(self.result_path))
 
 
 if __name__ == "__main__":
+    sys.argv += ["-platform", "windows:darkmode=2"]
     app = QApplication(sys.argv)
-    app.setStyle("Fusion")  # Try "Windows", "Fusion", "Macintosh"
     window = QMainWindow()
     sauna_app = SaunaMaraton(window)
     window.show()
